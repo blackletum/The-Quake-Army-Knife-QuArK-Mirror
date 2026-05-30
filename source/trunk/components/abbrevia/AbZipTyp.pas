@@ -1316,8 +1316,8 @@ begin
   Footer.StartDiskNumber := AbToWord(Min(FStartDiskNumber, $FFFF));
   Footer.EntriesOnDisk := AbToWord(Min(FEntriesOnDisk, $FFFF));
   Footer.TotalEntries := AbToWord(Min(FTotalEntries, $FFFF));
-  Footer.DirectorySize := AbToWord(Min(FDirectorySize, $FFFFFFFF));
-  Footer.DirectoryOffset := AbToWord(Min(FDirectoryOffset, $FFFFFFFF));
+  Footer.DirectorySize := AbToUInt32(Min(FDirectorySize, $FFFFFFFF));
+  Footer.DirectoryOffset := AbToUInt32(Min(FDirectoryOffset, $FFFFFFFF));
   pBytes := TEncoding.ANSI.GetBytes(FZipfileComment);
   Footer.CommentLength := AbToWord(Length(pBytes));
   Stream.WriteBuffer( Footer, SizeOf(Footer) );
@@ -1745,7 +1745,7 @@ begin
     VersionNeededToExtract := 20
   else
     VersionNeededToExtract := 10;
-  VersionMadeBy := (VersionMadeBy and $FF00) + Max(20, VersionNeededToExtract);
+  VersionMadeBy := AbToWord((VersionMadeBy and $FF00) + Max(20, VersionNeededToExtract));
 end;
 { -------------------------------------------------------------------------- }
 procedure TAbZipItem.UpdateZip64ExtraHeader;
@@ -2213,8 +2213,9 @@ begin
               end;
               {copy compressed data}
               NewStream.CopyFrom(WorkingStream, 0);
-              if CurrItem.IsEncrypted then
-                CurrItem.SaveDDToStream(NewStream);
+              //The user MicrotonX removed this code
+//              if CurrItem.IsEncrypted then
+//                CurrItem.SaveDDToStream(NewStream);
             finally
               WorkingStream.Free;
             end;
