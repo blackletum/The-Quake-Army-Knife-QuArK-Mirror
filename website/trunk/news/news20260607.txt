@@ -1,0 +1,10 @@
+<author>DanielPharos</author>
+<headline>Valve P2P somewhat broken for months now</headline>
+
+<p>There's an <a target="_blank" href="https://github.com/ValveSoftware/GameNetworkingSockets/issues/398">open bug report</a> for games that use Steam Networking for P2P, and are having major issues in several countries, like Israel and China. For some reason, network traffic is now going through the relay service, which causes a much higher latency, even though direct peer-to-peer UDP traffic used to work fine several months ago. Various workarounds have been found, including copying some files around, so it is very likely a bug somewhere with Steam, and not some networking issue.</p>
+
+<p>It's very worrying that Valve hasn't responded to the bug yet, nor fixed it. They have however deleted several comments on the bug report. So they are aware, just not willing (or able?) to fix it, it seems.</p>
+
+
+<p>Happy multi-playing,<br>
+DanielPharos</p>

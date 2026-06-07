@@ -398,4 +398,5 @@ $News[] = new cNews(6, mktime(0, 0, 0, 8, 8, 2025), NULL, 'news20250808.txt');
 $News[] = new cNews(6, mktime(0, 0, 0, 11, 23, 2025), NULL, 'news20251123.txt');
 $News[] = new cNews(6, mktime(0, 0, 0, 12, 23, 2025), NULL, 'news20251223.txt');
 $News[] = new cNews(6, mktime(0, 0, 0, 2, 17, 2026), NULL, 'news20260217.txt');
+$News[] = new cNews(6, mktime(0, 0, 0, 6, 7, 2026), NULL, 'news20260607.txt');
 ?>
