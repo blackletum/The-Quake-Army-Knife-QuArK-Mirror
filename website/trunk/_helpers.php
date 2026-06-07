@@ -48,12 +48,12 @@ function strclen(string $string): int
 	return strlen($string);
 }
 
-function StringLeft(&$string, $length)
+function StringLeft(string $string, int $length)
 {
 	return substr($string, 0, $length);
 }
 
-function StringRight(&$string, $length)
+function StringRight(string $string, int $length)
 {
 	return substr($string, strclen($string) - $length, $length);
 }
