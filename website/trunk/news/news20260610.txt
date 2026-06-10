@@ -1,0 +1,8 @@
+<author>DanielPharos</author>
+<headline>Valve P2P fixed</headline>
+
+<p>Valve just released a here's an <a target="_blank" href="https://store.steampowered.com/news/app/593110/view/688634179957555201">new version of steam</a>, that fixes the P2P bug I mentioned a few days ago. So it turns out Valve was just too lazy to fix it, until it became widespread news that made them look bad.</p>
+
+
+<p>Happy multi-playing,<br>
+DanielPharos</p>
