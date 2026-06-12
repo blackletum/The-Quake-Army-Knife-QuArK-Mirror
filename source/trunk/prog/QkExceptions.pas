@@ -364,7 +364,7 @@ begin
  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);
  {$ENDIF}
  if IsPythonInited then
-  L.Add(FmtLoadStr1(4616, [QuArKFullVersion, Format(Fallback5823, [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))]))
+  L.Add(AdjustLineBreaks(FmtLoadStr1(4616, [QuArKFullVersion, Format(LoadStr1(5823), [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))])))
  else
   L.Add(Format(Fallback4616, [QuArKFullVersion, Format(Fallback5823, [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))]));
  {$IFDEF Debug}
@@ -381,7 +381,7 @@ begin
   L.Add(Msg);
  L.Add(sLineBreak); //Note: This creates two linebreaks.
  if IsPythonInited then
-  L.Add(LoadStr1(4617))
+  L.Add(AdjustLineBreaks(LoadStr1(4617)))
  else
   L.Add(Fallback4617);
  Dlg:=GetParentForm(TControl(Sender));
