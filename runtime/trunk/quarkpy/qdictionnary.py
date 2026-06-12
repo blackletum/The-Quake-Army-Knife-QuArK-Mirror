@@ -551,7 +551,7 @@ Strings = {
     4463: "Invalid quaternion operation",
 
     4614: "&More >>",
-    4616: "                     *** EXCEPTION REPORT ***\n\n%s\nCompiled with:%s\nAddress in the program: 0x%p (base: 0x%p)",
+    4616: "                     *** EXCEPTION REPORT ***\n\nVersion: %s\nCompiled with: %s\nAddress in the program: 0x%p (base: 0x%p)",
     4617: "Please report this error to the QuArK development team, so that they can fix the issue promptly.",
     4618: "//Description of the invalid polygon :",
     4620: "Impossible to create the surface for a polygon//Three aligned points don't define a plane.",
@@ -1097,7 +1097,7 @@ Strings = {
     5820: "DrawToDC: Call to CreateDIBSection failed",
     5821: "DrawToDC: Call to SetDIBitsToDevice failed",
     5822: "Registered to %s",
-    #5823: "%s on %s",
+    5823: "%s on %s",
     5824: "Failed to parse poly: %s",
     5825: "Invalid face data",
     5826: "Files stored in %s",
