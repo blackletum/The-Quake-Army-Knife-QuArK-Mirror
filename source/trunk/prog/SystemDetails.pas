@@ -467,8 +467,8 @@ begin
 end;
 
 procedure TDelphi.Report(var sl: TStringList);
-var
 {$IFDEF Delphi7orNewerCompiler}
+var
   DateFormat: TFormatSettings;
 {$ENDIF}
 begin
@@ -1653,6 +1653,7 @@ begin
         FWow64:=False
       else
         FWow64:=True;
+      //FIXME: Do something with pNativeMachine too? Otherwise, just NULL it in the IsWow64Process2-call!
   end
   else
   begin
