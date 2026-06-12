@@ -1976,10 +1976,6 @@ begin
                  EditTogether.Add(Spec);
                  if GrayForm and gfGray = 0 then
                   begin
-				  //https://www.daniweb.com/programming/software-development/threads/357081/a-problematic-color-problem-in-delphi
-          //https://microsoft.public.win32.programmer.ui.narkive.com/LyuHfMLd/transparent-background-color-for-a-checkbox
-          //https://learn.microsoft.com/en-us/windows/win32/controls/wm-ctlcolorstatic
-          // --> "You can set the text background color of a disabled edit control, but you cannot set the text foreground color. The system always uses COLOR_GRAYTEXT."
                    Ctrl:=TCheckBox.Create(Self);
                    TCheckBox(Ctrl).Caption:=Strings['Cap'];
                    TCheckBox(Ctrl).OnEnter:=AnyControlEnter;
