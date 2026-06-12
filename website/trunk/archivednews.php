@@ -14,26 +14,34 @@ function pageLocalDisplay()
 	global $OldestNewsYear, $OldestNewsMonth;
 
 	$newsperiod = isset($_GET['newsperiod']) ? $_GET['newsperiod'] : null;
-	if ((!is_null($newsperiod)) && (strclen($newsperiod) === 6))
+	if (!is_null($newsperiod))
 	{
-		$newsyear = intval(substr($newsperiod, 0, 4));
-		$newsmonth = intval(substr($newsperiod, 4, 2));
-		if (($newsyear < $OldestNewsYear) || ($newsmonth < 1) || ($newsmonth > 12) || ($newsyear === $OldestNewsYear && $newsmonth < $OldestNewsMonth))
+		if (strclen($newsperiod) === 6)
 		{
-			//Invalid date
-			$newsperiod = null;
-			unset($newsyear);
-			unset($newsmonth);
-		}
-		else
-		{
-			if (($newsyear > intval(date('Y', $CurTime))) || ($newsyear === intval(date('Y', $CurTime)) && $newsmonth > intval(date('m', $CurTime))))
+			$newsyear = intval(substr($newsperiod, 0, 4));
+			$newsmonth = intval(substr($newsperiod, 4, 2));
+			if (($newsyear < $OldestNewsYear) || ($newsmonth < 1) || ($newsmonth > 12) || ($newsyear === $OldestNewsYear && $newsmonth < $OldestNewsMonth))
 			{
-				//Reject future date
+				//Invalid date
 				$newsperiod = null;
 				unset($newsyear);
 				unset($newsmonth);
 			}
+			else
+			{
+				if (($newsyear > intval(date('Y', $CurTime))) || ($newsyear === intval(date('Y', $CurTime)) && $newsmonth > intval(date('m', $CurTime))))
+				{
+					//Reject future date
+					$newsperiod = null;
+					unset($newsyear);
+					unset($newsmonth);
+				}
+			}
+		}
+		else
+		{
+			//Invalid date
+			$newsperiod = null;
 		}
 	}
 	if (is_null($newsperiod))
