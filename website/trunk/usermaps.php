@@ -7,10 +7,6 @@ require_once('_people-database.php');
 # Load language file
 LoadLanguageFile('usermaps.php');
 
-$checkboxon = array(null => ''
-                   ,'on' => 'checked '
-                   ,'1'  => 'checked ');
-
 if (isset($_GET['page']))
 {
 	$page = intval($_GET['page']) - 1;
@@ -22,46 +18,55 @@ else
 	$page = 0;
 }
 
-$Q1 = isset($_GET['Q1']) ? $_GET['Q1'] : null;
-$Q2 = isset($_GET['Q2']) ? $_GET['Q2'] : null;
-$Q3A = isset($_GET['Q3A']) ? $_GET['Q3A'] : null;
-$Q4 = isset($_GET['Q4']) ? $_GET['Q4'] : null;
-$CS = isset($_GET['CS']) ? $_GET['CS'] : null;
-$D3 = isset($_GET['D3']) ? $_GET['D3'] : null;
-$HL = isset($_GET['HL']) ? $_GET['HL'] : null;
-$HL2 = isset($_GET['HL2']) ? $_GET['HL2'] : null;
-$HX2 = isset($_GET['HX2']) ? $_GET['HX2'] : null;
-$HR2 = isset($_GET['HR2']) ? $_GET['HR2'] : null;
-$KP = isset($_GET['KP']) ? $_GET['KP'] : null;
-$MOHAA = isset($_GET['MOHAA']) ? $_GET['MOHAA'] : null;
-$SIN = isset($_GET['SIN']) ? $_GET['SIN'] : null;
-$SOF = isset($_GET['SOF']) ? $_GET['SOF'] : null;
-$EF = isset($_GET['EF']) ? $_GET['EF'] : null;
-$EF2 = isset($_GET['EF2']) ? $_GET['EF2'] : null;
-$ZZZ = isset($_GET['ZZZ']) ? $_GET['ZZZ'] : null;
-$ZZX = isset($_GET['ZZX']) ? $_GET['ZZX'] : null;
+function parseQuery($query)
+{
+	if (!isset($_GET[$query]))
+		return false;
 
-$M_NO = isset($_GET['M_NO']) ? $_GET['M_NO'] : null;
-$M_RA = isset($_GET['M_RA']) ? $_GET['M_RA'] : null;
-$M_TFC = isset($_GET['M_TFC']) ? $_GET['M_TFC'] : null;
-$M_ACT = isset($_GET['M_ACT']) ? $_GET['M_ACT'] : null;
-$M_CS = isset($_GET['M_CS']) ? $_GET['M_CS'] : null;
-$M_AIR = isset($_GET['M_AIR']) ? $_GET['M_AIR'] : null;
-$M_GLM = isset($_GET['M_GLM']) ? $_GET['M_GLM'] : null;
-$M_OP4 = isset($_GET['M_OP4']) ? $_GET['M_OP4'] : null;
-$M_KMQ2 = isset($_GET['M_KMQ2']) ? $_GET['M_KMQ2'] : null;
-$M_ZZZ = isset($_GET['M_ZZZ']) ? $_GET['M_ZZX'] : null;
-$M_ZZX = isset($_GET['M_ZZX']) ? $_GET['M_ZZX'] : null;
+	return ($_GET[$query] === 'on') or ($_GET[$query] === '1');
+}
 
-$T_SP = isset($_GET['T_SP']) ? $_GET['T_SP'] : null;
-$T_COOP = isset($_GET['T_COOP']) ? $_GET['T_COOP'] : null;
-$T_DM = isset($_GET['T_DM']) ? $_GET['T_DM'] : null;
-$T_TD = isset($_GET['T_TD']) ? $_GET['T_TD'] : null;
-$T_TOUR = isset($_GET['T_TOUR']) ? $_GET['T_TOUR'] : null;
-$T_TP = isset($_GET['T_TP']) ? $_GET['T_TP'] : null;
-$T_CTF = isset($_GET['T_CTF']) ? $_GET['T_CTF'] : null;
-$T_ZZZ = isset($_GET['T_ZZZ']) ? $_GET['T_ZZZ'] : null;
-$T_ZZX = isset($_GET['T_ZZX']) ? $_GET['T_ZZX'] : null;
+global $gameslist;
+$games = array();
+$ALL = parseQuery('*');
+foreach (array_keys($gameslist) as $game)
+{
+	if ($ALL or parseQuery($game)) $games[] = $game;
+}
+if ($ALL)
+	$games[] = '*';
+unset($ALL);
+
+global $modslist;
+$mods = array();
+$M_ALL = parseQuery('M_*');
+foreach (array_keys($modslist) as $mod)
+{
+	if ($M_ALL or parseQuery('M_'.$mod)) $mods[] = $mod;
+}
+if ($M_ALL)
+	$mods[] = '*';
+unset($M_ALL);
+
+global $maptypeslist;
+$maptypes = array();
+$T_ALL = parseQuery('T_*');
+foreach (array_keys($maptypeslist) as $maptype)
+{
+	if ($T_ALL or parseQuery('T_'.$maptype)) $maptypes[] = $maptype;
+}
+if ($T_ALL)
+	$maptypes[] = '*';
+unset($T_ALL);
+
+function getChecked($list, $item)
+{
+	if (in_array('*', $list))
+		return 'checked ';
+	if (in_array($item, $list))
+		return 'checked ';
+	return '';
+}
 
 $usermapsform = "<div class=\"centered\">
 <form action=\"usermaps.php\" method=\"get\">
@@ -70,28 +75,28 @@ $usermapsform = "<div class=\"centered\">
     <table cellspacing=0 cellpadding=0>
       <tr><td colspan=2 class=\"filterhead\"><b>Games:</b></td></tr>
       <tr><td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$Q1] ."type=\"checkbox\" value=\"1\" name=\"Q1\" >Quake 1</label><br>
-        <label><input ".$checkboxon[$Q2] ."type=\"checkbox\" value=\"1\" name=\"Q2\" >Quake 2</label><br>
-        <label><input ".$checkboxon[$Q3A]."type=\"checkbox\" value=\"1\" name=\"Q3A\">Quake 3: Arena</label><br>
-        <label><input ".$checkboxon[$Q4] ."type=\"checkbox\" value=\"1\" name=\"Q4\" >Quake 4</label><br>
-        <label><input ".$checkboxon[$CS] ."type=\"checkbox\" value=\"1\" name=\"CS\" >Counter-Strike</label><br>
-        <label><input ".$checkboxon[$D3] ."type=\"checkbox\" value=\"1\" name=\"D3\" >Doom 3</label><br>
-        <label><input ".$checkboxon[$HL] ."type=\"checkbox\" value=\"1\" name=\"HL\" >Half-Life</label><br>
-        <label><input ".$checkboxon[$HL2]."type=\"checkbox\" value=\"1\" name=\"HL2\">Half-Life 2</label><br>
-        <label><input ".$checkboxon[$HX2]."type=\"checkbox\" value=\"1\" name=\"HX2\">Hexen II</label>
+        <label><input ".getChecked($games, 'Q1') ."type=\"checkbox\" value=\"1\" name=\"Q1\" >Quake 1</label><br>
+        <label><input ".getChecked($games, 'Q2') ."type=\"checkbox\" value=\"1\" name=\"Q2\" >Quake 2</label><br>
+        <label><input ".getChecked($games, 'Q3') ."type=\"checkbox\" value=\"1\" name=\"Q3\" >Quake 3: Arena</label><br>
+        <label><input ".getChecked($games, 'Q4') ."type=\"checkbox\" value=\"1\" name=\"Q4\" >Quake 4</label><br>
+        <label><input ".getChecked($games, 'CS') ."type=\"checkbox\" value=\"1\" name=\"CS\" >Counter-Strike</label><br>
+        <label><input ".getChecked($games, 'D3') ."type=\"checkbox\" value=\"1\" name=\"D3\" >Doom 3</label><br>
+        <label><input ".getChecked($games, 'HL') ."type=\"checkbox\" value=\"1\" name=\"HL\" >Half-Life</label><br>
+        <label><input ".getChecked($games, 'HL2')."type=\"checkbox\" value=\"1\" name=\"HL2\">Half-Life 2</label><br>
+        <label><input ".getChecked($games, 'HX2')."type=\"checkbox\" value=\"1\" name=\"HX2\">Hexen II</label>
       </td>
       <td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$HR2]  ."type=\"checkbox\" value=\"1\" name=\"HR2\"  >Heretic 2</label><br>
-        <label><input ".$checkboxon[$KP]   ."type=\"checkbox\" value=\"1\" name=\"KP\"   >Kingpin</label><br>
-        <label><input ".$checkboxon[$MOHAA]."type=\"checkbox\" value=\"1\" name=\"MOHAA\">Medal of Honor</label><br>
-        <label><input ".$checkboxon[$SIN]  ."type=\"checkbox\" value=\"1\" name=\"SIN\"  >SiN</label><br>
-        <label><input ".$checkboxon[$SOF]  ."type=\"checkbox\" value=\"1\" name=\"SOF\"  >Soldier of Fortune</label><br>
-        <label><input ".$checkboxon[$EF]   ."type=\"checkbox\" value=\"1\" name=\"EF\"   >Star Trek Voyager: Elite Force</label><br>
-        <label><input ".$checkboxon[$EF2]  ."type=\"checkbox\" value=\"1\" name=\"EF2\"  >Star Trek: Elite Force 2</label><br>
-        <label><input ".$checkboxon[$ZZZ]  ."type=\"checkbox\" value=\"1\" name=\"ZZZ\"  >Unknown</label>
+        <label><input ".getChecked($games, 'HR2')  ."type=\"checkbox\" value=\"1\" name=\"HR2\"  >Heretic 2</label><br>
+        <label><input ".getChecked($games, 'KP')   ."type=\"checkbox\" value=\"1\" name=\"KP\"   >Kingpin</label><br>
+        <label><input ".getChecked($games, 'MOHAA')."type=\"checkbox\" value=\"1\" name=\"MOHAA\">Medal of Honor</label><br>
+        <label><input ".getChecked($games, 'SIN')  ."type=\"checkbox\" value=\"1\" name=\"SIN\"  >SiN</label><br>
+        <label><input ".getChecked($games, 'SOF')  ."type=\"checkbox\" value=\"1\" name=\"SOF\"  >Soldier of Fortune</label><br>
+        <label><input ".getChecked($games, 'EF')   ."type=\"checkbox\" value=\"1\" name=\"EF\"   >Star Trek Voyager: Elite Force</label><br>
+        <label><input ".getChecked($games, 'EF2')  ."type=\"checkbox\" value=\"1\" name=\"EF2\"  >Star Trek: Elite Force 2</label><br>
+        <label><input ".getChecked($games, '?')    ."type=\"checkbox\" value=\"1\" name=\"?\"    >Unknown</label>
       </td></tr>
       <tr><td colspan=2 class=\"filterbody\" align=center>
-        <label><input ".$checkboxon[$ZZX]."type=\"checkbox\" value=\"1\" name=\"ZZX\">Just show me for all games!</label>
+        <label><input ".getChecked($games, '*')."type=\"checkbox\" value=\"1\" name=\"*\">Just show me for all games!</label>
       </td></tr>
     </table>
   </td>
@@ -100,20 +105,20 @@ $usermapsform = "<div class=\"centered\">
     <table cellspacing=0 cellpadding=0>
       <tr><td colspan=2 class=\"filterhead\"><b>Mods:</b></td></tr>
       <tr><td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$M_NO] ."type=\"checkbox\" value=\"1\" name=\"M_NO\" >Vanilla game (no mods)</label><br>
-        <label><input ".$checkboxon[$M_RA] ."type=\"checkbox\" value=\"1\" name=\"M_RA\" >Rocket Arena 'Q2'</label><br>
-        <label><input ".$checkboxon[$M_TFC]."type=\"checkbox\" value=\"1\" name=\"M_TFC\">Team Fortress 'Q1/HL'</label><br>
-        <label><input ".$checkboxon[$M_ACT]."type=\"checkbox\" value=\"1\" name=\"M_ACT\">Action 'Q2/HL'</label><br>
-        <label><input ".$checkboxon[$M_AIR]."type=\"checkbox\" value=\"1\" name=\"M_AIR\">AirQuake 'Q1/Q2'</label>
+        <label><input ".getChecked($mods, 'NO') ."type=\"checkbox\" value=\"1\" name=\"M_NO\" >Vanilla game (no mods)</label><br>
+        <label><input ".getChecked($mods, 'RA') ."type=\"checkbox\" value=\"1\" name=\"M_RA\" >Rocket Arena 'Q2'</label><br>
+        <label><input ".getChecked($mods, 'TFC')."type=\"checkbox\" value=\"1\" name=\"M_TFC\">Team Fortress 'Q1/HL'</label><br>
+        <label><input ".getChecked($mods, 'ACT')."type=\"checkbox\" value=\"1\" name=\"M_ACT\">Action 'Q2/HL'</label><br>
+        <label><input ".getChecked($mods, 'AIR')."type=\"checkbox\" value=\"1\" name=\"M_AIR\">AirQuake 'Q1/Q2'</label>
       </td>
       <td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$M_GLM] ."type=\"checkbox\" value=\"1\" name=\"M_GLM\" >Gloom 'Q2'</label><br>
-        <label><input ".$checkboxon[$M_OP4] ."type=\"checkbox\" value=\"1\" name=\"M_OP4\" >Opposing Forces 'HL'</label><br>
-        <label><input ".$checkboxon[$M_KMQ2]."type=\"checkbox\" value=\"1\" name=\"M_KMQ2\">Knightmare 'Q2'</label><br>
-        <label><input ".$checkboxon[$M_ZZZ] ."type=\"checkbox\" value=\"1\" name=\"M_ZZZ\" >Unknown</label>
+        <label><input ".getChecked($mods, 'GLM') ."type=\"checkbox\" value=\"1\" name=\"M_GLM\" >Gloom 'Q2'</label><br>
+        <label><input ".getChecked($mods, 'OP4') ."type=\"checkbox\" value=\"1\" name=\"M_OP4\" >Opposing Forces 'HL'</label><br>
+        <label><input ".getChecked($mods, 'KMQ2')."type=\"checkbox\" value=\"1\" name=\"M_KMQ2\">Knightmare 'Q2'</label><br>
+        <label><input ".getChecked($mods, '?')   ."type=\"checkbox\" value=\"1\" name=\"M_?\"   >Unknown</label>
       </td></tr>
       <tr><td colspan=2 class=\"filterbody\" align=center>
-        <label><input ".$checkboxon[$M_ZZX]."type=\"checkbox\" value=\"1\" name=\"M_ZZX\">Just show me for all mods!</label>
+        <label><input ".getChecked($mods, '*')."type=\"checkbox\" value=\"1\" name=\"M_*\">Just show me for all mods!</label>
       </td></tr>
     </table>
   </td>
@@ -122,19 +127,19 @@ $usermapsform = "<div class=\"centered\">
     <table cellspacing=0 cellpadding=0>
       <tr><td colspan=2 class=\"filterhead\"><b>Maptypes:</b></td></tr>
       <tr><td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$T_SP]  ."type=\"checkbox\" value=\"1\" name=\"T_SP\"  >Single player</label><br>
-        <label><input ".$checkboxon[$T_COOP]."type=\"checkbox\" value=\"1\" name=\"T_COOP\">Cooperative</label><br>
-        <label><input ".$checkboxon[$T_DM]  ."type=\"checkbox\" value=\"1\" name=\"T_DM\"  >Deathmatch</label><br>
-        <label><input ".$checkboxon[$T_TP]  ."type=\"checkbox\" value=\"1\" name=\"T_TP\"  >Teamplay</label>
+        <label><input ".getChecked($maptypes, 'SP')  ."type=\"checkbox\" value=\"1\" name=\"T_SP\"  >Single player</label><br>
+        <label><input ".getChecked($maptypes, 'COOP')."type=\"checkbox\" value=\"1\" name=\"T_COOP\">Cooperative</label><br>
+        <label><input ".getChecked($maptypes, 'DM')  ."type=\"checkbox\" value=\"1\" name=\"T_DM\"  >Deathmatch</label><br>
+        <label><input ".getChecked($maptypes, 'TP')  ."type=\"checkbox\" value=\"1\" name=\"T_TP\"  >Teamplay</label>
       </td>
       <td class=\"filterbody\" valign=top align=left style=\"padding-left: 8px; padding-right: 8px;\">
-        <label><input ".$checkboxon[$T_TD]  ."type=\"checkbox\" value=\"1\" name=\"T_TD\"  >Team deathmatch</label><br>
-        <label><input ".$checkboxon[$T_TOUR]."type=\"checkbox\" value=\"1\" name=\"T_TOUR\">Tourney</label><br>
-        <label><input ".$checkboxon[$T_CTF] ."type=\"checkbox\" value=\"1\" name=\"T_CTF\" >Capture the Flag</label><br>
-        <label><input ".$checkboxon[$T_ZZZ] ."type=\"checkbox\" value=\"1\" name=\"T_ZZZ\" >Unknown</label>
+        <label><input ".getChecked($maptypes, 'TD')  ."type=\"checkbox\" value=\"1\" name=\"T_TD\"  >Team deathmatch</label><br>
+        <label><input ".getChecked($maptypes, 'TOUR')."type=\"checkbox\" value=\"1\" name=\"T_TOUR\">Tourney</label><br>
+        <label><input ".getChecked($maptypes, 'CTF') ."type=\"checkbox\" value=\"1\" name=\"T_CTF\" >Capture the Flag</label><br>
+        <label><input ".getChecked($maptypes, '?')   ."type=\"checkbox\" value=\"1\" name=\"T_?\"   >Unknown</label>
       </td></tr>
       <tr><td colspan=2 class=\"filterbody\" align=center>
-        <label><input ".$checkboxon[$T_ZZX] ."type=\"checkbox\" value=\"1\" name=\"T_ZZX\">Just show me for all maptypes!</label>
+        <label><input ".getChecked($maptypes, '*')."type=\"checkbox\" value=\"1\" name=\"T_*\">Just show me for all maptypes!</label>
       </td></tr>
     </table>
   </td>
@@ -147,91 +152,6 @@ $usermapsform = "<div class=\"centered\">
 Select minimum a game checkbox, mod checkbox, <u>and</u> a maptype checkbox, to view the list of maps.
 </div>
 ";
-
-# Create a search array for game-ids
-$games = array();
-if ($Q1  || $ZZX) $games[] = 'Q1';
-if ($Q2  || $ZZX) $games[] = 'Q2';
-if ($Q3A || $ZZX) $games[] = 'Q3';
-if ($Q4  || $ZZX) $games[] = 'Q4';
-if ($CS  || $ZZX) $games[] = 'CS';
-if ($D3  || $ZZX) $games[] = 'D3';
-if ($HL  || $ZZX) $games[] = 'HL';
-if ($HL2 || $ZZX) $games[] = 'HL2';
-if ($HX2 || $ZZX) $games[] = 'HX2';
-if ($HR2 || $ZZX) $games[] = 'HR2';
-if ($KP  || $ZZX) $games[] = 'KP';
-if ($MOHAA || $ZZX) $games[] = 'MOHAA';
-if ($SIN || $ZZX) $games[] = 'SIN';
-if ($SOF || $ZZX) $games[] = 'SOF';
-if ($EF  || $ZZX) $games[] = 'EF';
-if ($EF2 || $ZZX) $games[] = 'EF2';
-if ($ZZZ || $ZZX) $games[] = null;
-
-# Create a search array for maptype-ids
-$maptypes = array();
-if ($T_SP   || $T_ZZX) $maptypes[] = 'SP';
-if ($T_COOP || $T_ZZX) $maptypes[] = 'COOP';
-if ($T_DM   || $T_ZZX) $maptypes[] = 'DM';
-if ($T_TP   || $T_ZZX) $maptypes[] = 'TP';
-if ($T_TD   || $T_ZZX) $maptypes[] = 'TD';
-if ($T_TOUR || $T_ZZX) $maptypes[] = 'TOUR';
-if ($T_CTF  || $T_ZZX) $maptypes[] = 'CTF';
-if ($T_ZZZ  || $T_ZZX) $maptypes[] = null;
-
-# Create a search array for mod-ids
-$mods = array();
-if ($M_NO  || $M_ZZX) $mods[] = 'NO';
-if ($M_RA  || $M_ZZX) $mods[] = 'RA';
-if ($M_TFC || $M_ZZX) $mods[] = 'TFC';
-if ($M_ACT || $M_ZZX) $mods[] = 'ACT';
-if ($M_AIR || $M_ZZX) $mods[] = 'AIR';
-if ($M_GLM || $M_ZZX) $mods[] = 'GLM';
-if ($M_OP4 || $M_ZZX) $mods[] = 'OP4';
-if ($M_KMQ2 || $M_ZZX) $mods[] = 'KMQ2';
-if ($M_ZZZ || $M_ZZX) $mods[] = null;
-
-# This is used for the next/prev button panel
-#FIXME: This should be done better!
-$listhidden = '';
-if ($Q1)  $listhidden .= '<input type="hidden" name="Q1" value="1">';
-if ($Q2)  $listhidden .= '<input type="hidden" name="Q2" value="1">';
-if ($Q3A) $listhidden .= '<input type="hidden" name="Q3A" value="1">';
-if ($Q4)  $listhidden .= '<input type="hidden" name="Q4" value="1">';
-if ($CS)  $listhidden .= '<input type="hidden" name="CS" value="1">';
-if ($D3)  $listhidden .= '<input type="hidden" name="D3" value="1">';
-if ($HL)  $listhidden .= '<input type="hidden" name="HL" value="1">';
-if ($HL2) $listhidden .= '<input type="hidden" name="HL2" value="1">';
-if ($HX2) $listhidden .= '<input type="hidden" name="HX2" value="1">';
-if ($HR2) $listhidden .= '<input type="hidden" name="HR2" value="1">';
-if ($KP)  $listhidden .= '<input type="hidden" name="KP" value="1">';
-if ($MOHAA) $listhidden .= '<input type="hidden" name="MOHAA" value="1">';
-if ($SIN) $listhidden .= '<input type="hidden" name="SIN" value="1">';
-if ($SOF) $listhidden .= '<input type="hidden" name="SOF" value="1">';
-if ($EF)  $listhidden .= '<input type="hidden" name="EF" value="1">';
-if ($EF2) $listhidden .= '<input type="hidden" name="EF2" value="1">';
-if ($ZZZ) $listhidden .= '<input type="hidden" name="ZZZ" value="1">';
-if ($ZZX) $listhidden .= '<input type="hidden" name="ZZX" value="1">';
-
-if ($M_NO)   $listhidden .= '<input type="hidden" name="M_NO" value="1">';
-if ($M_RA)   $listhidden .= '<input type="hidden" name="M_RA" value="1">';
-if ($M_TFC)  $listhidden .= '<input type="hidden" name="M_TFC" value="1">';
-if ($M_ACT)  $listhidden .= '<input type="hidden" name="M_ACT" value="1">';
-if ($M_AIR)  $listhidden .= '<input type="hidden" name="M_AIR" value="1">';
-if ($M_GLM)  $listhidden .= '<input type="hidden" name="M_GLM" value="1">';
-if ($M_OP4)  $listhidden .= '<input type="hidden" name="M_OP4" value="1">';
-if ($M_KMQ2) $listhidden .= '<input type="hidden" name="M_KMQ2" value="1">';
-if ($M_ZZZ)  $listhidden .= '<input type="hidden" name="M_ZZZ" value="1">';
-if ($M_ZZX)  $listhidden .= '<input type="hidden" name="M_ZZX" value="1">';
-
-if ($T_SP)   $listhidden .= '<input type="hidden" name="T_SP" value="1">';
-if ($T_COOP) $listhidden .= '<input type="hidden" name="T_COOP" value="1">';
-if ($T_DM)   $listhidden .= '<input type="hidden" name="T_DM" value="1">';
-if ($T_TP)   $listhidden .= '<input type="hidden" name="T_TP" value="1">';
-if ($T_TD)   $listhidden .= '<input type="hidden" name="T_TD" value="1">';
-if ($T_CTF)  $listhidden .= '<input type="hidden" name="T_CTF" value="1">';
-if ($T_ZZZ)  $listhidden .= '<input type="hidden" name="T_ZZZ" value="1">';
-if ($T_ZZX)  $listhidden .= '<input type="hidden" name="T_ZZX" value="1">';
 
 function pageLocalDisplay()
 {
@@ -259,7 +179,24 @@ function pageLocalDisplay()
 	if ($games && $maptypes && $mods)
 	{
 		global $page;
-		global $listhidden;
+
+		# This is used for the next/prev button panel
+		$listhidden = '';
+		foreach (array_keys($gameslist) as $game)
+		{
+			if (in_array($game, $games))
+				$listhidden .= '<input type="hidden" name="'.$game.'" value="1">';
+		}
+		foreach (array_keys($maptypeslist) as $maptype)
+		{
+			if (in_array($maptype, $maptypes))
+				$listhidden .= '<input type="hidden" name="T_'.$maptype.'" value="1">';
+		}
+		foreach (array_keys($modslist) as $mod)
+		{
+			if (in_array($mod, $mods))
+				$listhidden .= '<input type="hidden" name="M_'.$mod.'" value="1">';
+		}
 
 		# First, find all the maps that match the filter options
 		$SelectedMaps = array();

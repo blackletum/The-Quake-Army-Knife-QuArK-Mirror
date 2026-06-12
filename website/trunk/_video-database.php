@@ -48,10 +48,10 @@ global $picsroot, $videosroot;
 
 global $videotypeslist;
 $videotypeslist = array(
- 'T1' => 'Tutorial'
-,'T2' => 'Demonstration'
-,'T3' => 'Preview'
-,'-'  => 'Unknown'
+ 'TUTO' => 'Tutorial'
+,'DEMO' => 'Demonstration'
+,'PREV' => 'Preview'
+,'?'    => 'Unknown'
 );
 
 global $mediatypeslist;
@@ -78,7 +78,7 @@ new cVideo(
 ,NULL
 ,16989357
 ,'1:38 (m:ss)'
-,'T3'
+,'PREV'
 ,'M1' //'M5'
 ,'A demonstration of the OpenGL lighting introduced in QuArK 6.5.0 Beta 2.0.'
 ,'S-Mpeg 4 version 3 (MP43) (video), MP3 (audio)'
@@ -97,7 +97,7 @@ new cVideo(
 ,NULL
 ,156961739
 ,'11:45 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M1'
 ,"This is a small video tutorial on how to make a basic start map with no sky using QuArK, it will also show one of the ways to use the \"No Draw\" texture and how to \"Miter\" the corners of the walls in your map."
 ,'TechSmith Screen Capture Codec (tscc) (video), PCM Audio (audio)'
@@ -116,7 +116,7 @@ new cVideo(
 ,NULL
 ,13786171
 ,'2:52 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M1'
 ,'A tutorial on how to make a basic room in QuArK.'
 ,'XviD 1.1.2 Final (XVID) (video), PCM Audio (audio)'
@@ -135,7 +135,7 @@ new cVideo(
 ,NULL
 ,14804363
 ,'2:23 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M1'
 ,'A tutorial on how to add a doorway to a basic room in QuArK.'
 ,'XviD 1.1.2 Final (XVID) (video), PCM Audio (audio)'
@@ -154,7 +154,7 @@ new cVideo(
 ,NULL
 ,0
 ,'3:01 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'Map compiler integrated with Quark'
 ,NULL
@@ -173,7 +173,7 @@ new cVideo(
 ,NULL
 ,0
 ,'25:37 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"Here's the guide you've been waiting for. It explains straight to the point all the stuff you need to know, which isn't a lot really. It also features Frictional Battlecube recreated in QuArK!"
 ,NULL
@@ -192,7 +192,7 @@ new cVideo(
 ,NULL
 ,0
 ,'3:14 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,"I made a small video, just an export Test map to HalfLife2 DeathMatch. I'm using Quark 6.5 beta 3 by the way."
 ,NULL
@@ -211,7 +211,7 @@ new cVideo(
 ,NULL
 ,33238780
 ,'3:08 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M2'
 ,'This is a small video tutorial on where to download the build tools and how to setup and configure QuArK to make maps for Nexuiz.'
 ,NULL
@@ -231,7 +231,7 @@ new cVideo(
 ,NULL
 ,83053552
 ,'7:53 (m:ss) + 13:44 (mm:ss) + 5:59 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M1'
 ,"Here is a nice pack of three video tutorials to help you learn how to make interior structures for SimWorld and other Torque based games using the Quark editor. There are three video tutorials included, each on a different topic:<br>
 <br>
@@ -254,7 +254,7 @@ Quark3.avi - Part 3 - Teaches how to export from Quark into SimWorld."
 ,NULL
 ,0
 ,'5:09 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'How to start a SOF map with quark.'
 ,NULL
@@ -273,7 +273,7 @@ Quark3.avi - Part 3 - Teaches how to export from Quark into SimWorld."
 ,NULL
 ,0
 ,'4:10 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Jest to mój pierwszy tutorial video (wysylany juz 3 raz xD)'
 ,NULL
@@ -292,7 +292,7 @@ Quark3.avi - Part 3 - Teaches how to export from Quark into SimWorld."
 ,NULL
 ,0
 ,'1:15 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'My quark prefab - inspired by macross anime'
 ,NULL
@@ -386,7 +386,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:55 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'ancientgouki2 made by me using quark'
 ,NULL
@@ -405,7 +405,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'4:50 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'In This Tutorial I Show How To Make a Pool In Quake 1 :) I Hope You Enjoy'
 ,NULL
@@ -424,7 +424,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'2:22 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'my hexen 2 level in quark. Please, where find quark hexen 2 map tutorials!'
 ,NULL
@@ -444,7 +444,7 @@ Thanks for watching!"
 #,NULL
 #,0
 #,'2:55 (m:ss)'
-#,'T2'
+#,'DEMO'
 #,'M6'
 #,'I love quark already...'
 #,NULL
@@ -463,7 +463,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:57 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,"This is one of my Quake 2 maps that I've made with QuArK Quake Army Knife. It uses many aspects of medeval times. This is my first map i;ve videotaped using Fraps 3.2"
 ,NULL
@@ -482,7 +482,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:47 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'name says it all'
 ,NULL
@@ -501,7 +501,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'2:37 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'making a pipe'
 ,NULL
@@ -520,7 +520,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:57 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Configuration tutorial for Quake Army Knife ( Quark ) for Counter-Strike'
 ,NULL
@@ -540,7 +540,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:08 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'QuArK editor Dawn of Darkness qrk file for Quake 2 Dawn of Darkness mod.'
 ,NULL
@@ -559,7 +559,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:16 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,"I decided to try and build some Portal objects in Quake II using QuArK. This level uses textures and items all found in the game, and all the Portal objects were constructed using primitives. There are no portals, though. Quake II does have teleporters, but they are pretty limited as best as I can tell. I may make more levels that have puzzles, but they would have to be non-portal related, considering I'm not editing any of the game source code."
 ,NULL
@@ -578,7 +578,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:29 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'Back when I had a lot of time for creating Half-Life maps... I made... this... man this is old. Mapped using QuArK (Quake Army Knife), great mapping tool...'
 ,NULL
@@ -597,7 +597,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:05 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,"Very early version of my new map. Don't worry, i'm already working on Alpha 2. The project started yesterday. It's being made with QuarK (QUAKE ARMY KNIFE) and does NOT require HL:Source..."
 ,NULL
@@ -636,7 +636,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:42 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"Here i'm using Quake 2 as a short example."
 ,NULL
@@ -656,7 +656,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'5:14 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -676,7 +676,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:42 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -696,7 +696,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:11 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -734,7 +734,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'2:31 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Make a new map first with the BSP editor. Than follow the instructions in the video.<br><br>Faceti o noua mapa prima data cu editorul BSP. Si dupa aceea urmati instructiunile din video.'
 ,NULL
@@ -753,7 +753,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:33 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Importarea unor texturi noi cu un efect de transparenta folosind editorul Quake Army Knife.<br><br>Importing new textures with a transparency effect using Quake Army Knife editor.'
 ,NULL
@@ -772,7 +772,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'6:50 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Phong shading, wrapping and scaling off a texture on a pillar poly.<br><br>Umbrirea phong, curbarea si scalarea texturii pe un poligon a unui stalp.'
 ,NULL
@@ -791,7 +791,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:39 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -810,7 +810,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:50 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'tool to export quark army knife maps to xml then load and animte on Unity3d'
 ,NULL
@@ -829,7 +829,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'9:11 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"A few years ago, when i was still discovering the 3d programming I had so much fun using 6DX engine but always with the dream of one day create something similar. So, using Unity3D with Quark and one little of programming i've made this."
 ,NULL
@@ -848,7 +848,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'5:26 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"apply a 'negative poly' to hollow out an area to make a corrodor between 2 rooms"
 ,NULL
@@ -869,7 +869,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'1:31 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'short tutorial for quakr to make addon<br>addons for quark have the extensioon .qrk'
 ,NULL
@@ -888,7 +888,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'0:56 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,"Cube appears to be going through itself. Quick unedited video showing the problem I'm experiencing with OpenGL so that it can be debugged."
 ,NULL
@@ -907,7 +907,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'4:25 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'Prefab made for Kingpin life of crime in Quake army knife, in a stage of development.'
 ,NULL
@@ -926,7 +926,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'22:14 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Simple game level design tutorial for beginners, how to create a map for a classic first-person shooter. What you need is a computer with Windows on it, a mouse and a small pen-drive.'
 ,NULL
@@ -945,7 +945,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'51:38 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Tutorial based on editor QuArK and classic shooter Quake 2 as a base for learning simple steps for creating a map in .bsp format.'
 ,NULL
@@ -964,7 +964,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'50:06 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Learn to rotate, mirror, cut and enlarge polyhedrons, create some boulders and make a first simple map for Quake 2.'
 ,NULL
@@ -983,7 +983,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'45:26 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Add lights to your Quake 2 map, place some weapons, spawning points and make it playable.'
 ,NULL
@@ -1002,7 +1002,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'15:17 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'How to create emptiness, how to build walls around & quick tunnel boring.'
 ,NULL
@@ -1021,7 +1021,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'14:48 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -1040,7 +1040,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'25:31 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL
 ,NULL
@@ -1078,7 +1078,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'26:03 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Hello! Here u have link for Basic stuff...ramps,lights.'
 ,NULL
@@ -1097,7 +1097,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'2:53:42 (h:mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Various features and functions of the Quake Army Knife.'
 ,NULL
@@ -1116,7 +1116,7 @@ Thanks for watching!"
 ,NULL
 ,0
 ,'23:03 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Mapping and testing.'
@@ -1136,7 +1136,7 @@ Mapping and testing.'
 ,NULL
 ,0
 ,'26:33 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Mapping and testing.'
@@ -1156,7 +1156,7 @@ Mapping and testing.'
 ,NULL
 ,0
 ,'33:34 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Mapping and testing.'
@@ -1176,7 +1176,7 @@ Mapping and testing.'
 ,NULL
 ,0
 ,'36:09 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Mapping and testing.'
@@ -1196,7 +1196,7 @@ Mapping and testing.'
 ,NULL
 ,0
 ,'12:02 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Mapping and testing.'
@@ -1216,7 +1216,7 @@ Mapping and testing.'
 ,NULL
 ,0
 ,'54:14 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Visuals (texturing, extras).'
@@ -1236,7 +1236,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'1:05:36 (h:mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Visuals (texturing, extras).'
@@ -1256,7 +1256,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'49:42 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Visuals (texturing, extras).'
@@ -1276,7 +1276,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'38:22 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Visuals (texturing, extras).'
@@ -1296,7 +1296,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'1:11:25 (h:mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'QuArK map editor + quake 2 + jump mod.<br>
 Visuals (texturing, extras).'
@@ -1316,7 +1316,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'2:08 (m:ss)'
-,'T2'
+,'DEMO'
 ,'M6'
 ,'One of my q2jump maps.'
 ,NULL
@@ -1335,7 +1335,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'1:20 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'Want to learn how to map for Quake 3 using Quark map editor? This is the beginning of a series of tutorials just for you!'
 ,NULL
@@ -1354,7 +1354,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'9:45 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'An almost complete list of mapping terminology and jargon.'
 ,NULL
@@ -1373,7 +1373,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'8:10 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"Let's install, configure and test IOQuake3, Quark and our compiler tools (QMAP2, BSPC & PAKScape)."
 ,NULL
@@ -1392,7 +1392,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'16:15 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,"In this video I go over Quark's interface."
 ,NULL
@@ -1411,7 +1411,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'11:18 (mm:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,NULL //Unknown? Need to login
 ,NULL
@@ -1431,7 +1431,7 @@ Visuals (texturing, extras).'
 ,NULL
 ,0
 ,'1:29 (m:ss)'
-,'T1'
+,'TUTO'
 ,'M6'
 ,'http://quark.sourceforge.net/downloads/build_tools/q3map_2.5.17_win32_x86-unofficial.zip'
 ,NULL
@@ -1440,5 +1440,4 @@ Visuals (texturing, extras).'
 )*/
 
 );
-
 ?>

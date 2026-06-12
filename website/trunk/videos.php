@@ -8,30 +8,48 @@ require_once('_settings-database.php');
 # Load language file
 LoadLanguageFile('videos.php');
 
-$checkboxon = array(NULL => ''
-                   ,'on' => 'checked '
-                   ,'1'  => 'checked ');
+function parseQuery($query)
+{
+	if (!isset($_GET[$query]))
+		return false;
 
-$T1 = isset($_GET['T1']) ? $_GET['T1'] : NULL;
-$T2 = isset($_GET['T2']) ? $_GET['T2'] : NULL;
-$T3 = isset($_GET['T3']) ? $_GET['T3'] : NULL;
-$TZ = isset($_GET['TZ']) ? $_GET['TZ'] : NULL;
-$TA = isset($_GET['TA']) ? $_GET['TA'] : NULL;
+	return ($_GET[$query] === 'on') or ($_GET[$query] === '1');
+}
+
+global $videotypeslist;
+$videotypes = array();
+$ALL = parseQuery('*');
+foreach (array_keys($videotypeslist) as $videotype)
+{
+	if ($ALL or parseQuery($videotype)) $videotypes[] = $videotype;
+}
+if ($ALL)
+	$videotypes[] = '*';
+unset($ALL);
+
+function getChecked($list, $item)
+{
+	if (in_array('*', $list))
+		return 'checked ';
+	if (in_array($item, $list))
+		return 'checked ';
+	return '';
+}
 
 $videosform = '<div class="centered">
 <form action="videos.php" method="get">
 <table cellspacing=0 cellpadding=0 align=center>
   <tr><td colspan=2 class="filterhead"><b>Types:</b></td></tr>
   <tr><td class="filterbody" valign=top align=left style="padding-left: 8px; padding-right: 8px;">
-    <label><input '.$checkboxon[$T1].'type="checkbox" value="1" name="T1">Tutorials</label><br>
-    <label><input '.$checkboxon[$T2].'type="checkbox" value="1" name="T2">Demonstrations</label><br>
-    <label><input '.$checkboxon[$T3].'type="checkbox" value="1" name="T3">Previews</label>
+    <label><input '.getChecked($videotypes, 'TUTO').'type="checkbox" value="1" name="TUTO">Tutorials</label><br>
+    <label><input '.getChecked($videotypes, 'DEMO').'type="checkbox" value="1" name="DEMO">Demonstrations</label><br>
+    <label><input '.getChecked($videotypes, 'PREV').'type="checkbox" value="1" name="PREV">Previews</label>
   </td>
   <td class="filterbody" valign=top align=left style="padding-left: 8px; padding-right: 8px;">
-    <label><input '.$checkboxon[$TZ].'type="checkbox" value="1" name="TZ">Unknown</label>
+    <label><input '.getChecked($videotypes, '?').'type="checkbox" value="1" name="?">Unknown</label>
   </td></tr>
   <tr><td colspan=2 class="filterbody" align=center>
-    <label><input '.$checkboxon[$TA].'type="checkbox" value="1" name="TA">Just show me for all types!</label>
+    <label><input '.getChecked($videotypes, '*').'type="checkbox" value="1" name="*">Just show me for all types!</label>
   </td></tr>
   <tr><td colspan=2 align=center>
   <input type="submit" value="Show me">
@@ -41,13 +59,6 @@ $videosform = '<div class="centered">
 Select at least one video type checkbox.
 </div>
 <p>Note: Some videos might be in compressed files (.zip, .rar, ...) or need special plugins or codecs to play properly.</p>';
-
-# Create a regular-search-exp for type-ids
-$videotypes = array();
-if ($T1 || $TA) $videotypes[] = 'T1';
-if ($T2 || $TA) $videotypes[] = 'T2';
-if ($T3 || $TA) $videotypes[] = 'T3';
-if ($TZ || $TA) $videotypes[] = '-';
 
 function pageLocalDisplay()
 {
