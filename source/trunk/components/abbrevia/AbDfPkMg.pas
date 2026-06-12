@@ -36,7 +36,8 @@ unit AbDfPkMg;
 interface
 
 uses
-  AbDfBase;
+  AbDfBase,
+  QCompat;
 
 procedure GenerateCodeLengths(aMaxCodeLen  : integer;
                         const aWeights     : array of integer;

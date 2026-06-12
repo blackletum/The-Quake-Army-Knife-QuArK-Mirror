@@ -39,7 +39,8 @@ uses
   Classes,
   Types,
   //Generics.Collections,
-  AbUtils;
+  AbUtils,
+  QCompat;
 
 { ===== TAbArchiveItem ====================================================== }
 (*type
