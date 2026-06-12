@@ -266,6 +266,11 @@ const
   {$ENDIF VCLFIXPACK_DB_SUPPORT}
 {$IFEND}
 
+//DanielPharos:
+{$IF CompilerVersion = 15} // Delphi 7
+  {$DEFINE ButtonControlColorStaticFix}
+{$IFEND}
+
 {**************************************************************************************************}
 { Workaround for Windows Vista CompareString bug.                                                  }
 { The Ü/ü ($DC/$FC) and the UE/ue are treated equal in all locales, but they aren't equal. There   }
@@ -2544,6 +2549,59 @@ end;
 
 
 { ---------------------------------------------------------------------------- }
+//DanielPharos: This is a bug in Delphi 7 specifically. When DoubleBuffering is enabled,
+//the background drawing of TButtonControl doesn't behave. This is not visible for normal
+//buttons, but is very visible for TCheckBox.
+{$IFDEF ButtonControlColorStaticFix}
+type
+  TButtonControlFix = class(TButtonControl)
+  private
+    procedure NewWndProc(var Message: TMessage);
+  end;
+
+procedure TButtonControlFix.NewWndProc(var Message: TMessage);
+begin
+  case Message.Msg of
+    CN_CTLCOLORSTATIC:
+      with ThemeServices do
+        if ThemesEnabled then
+        begin
+          if Parent.DoubleBuffered then
+            PerformEraseBackground(Self, TWMCtlColorStatic(Message).ChildDC)
+          else
+            DrawParentBackground(Handle, TWMCtlColorStatic(Message).ChildDC, nil, False);
+          { Return an empty brush to prevent Windows from overpainting we just have created. }
+          Message.Result := GetStockObject(NULL_BRUSH);
+        end
+        else
+          inherited WndProc(Message); // "inherited" is required here, otherwise this would be an endless recursion
+  else
+    inherited WndProc(Message); // "inherited" is required here, otherwise this would be an endless recursion
+  end;
+end;
+
+procedure InitButtonControlColorStaticFix;
+begin
+  DebugLog('FixButtonControlColorStatic');
+  ReplaceVmtField(TButtonControl, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
+  ReplaceVmtField(TCustomCheckBox, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
+  ReplaceVmtField(TCheckBox, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
+  ReplaceVmtField(TRadioButton, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
+end;
+
+procedure FiniButtonControlColorStaticFix;
+begin
+  ReplaceVmtField(TButtonControl, @TButtonControlFix.NewWndProc, @TButtonControlFix.WndProc);
+  ReplaceVmtField(TCustomCheckBox, @TButtonControlFix.NewWndProc, @TButtonControlFix.WndProc);
+  ReplaceVmtField(TCheckBox, @TButtonControlFix.NewWndProc, @TButtonControlFix.WndProc);
+  ReplaceVmtField(TRadioButton, @TButtonControlFix.NewWndProc, @TButtonControlFix.WndProc);
+end;
+{$ENDIF ButtonControlColorStaticFix}
+{ ---------------------------------------------------------------------------- }
+
+
+
+{ ---------------------------------------------------------------------------- }
 { Workaround for Windows Vista CompareString bug }
 {$IFDEF VistaCompareStringFix}
 
@@ -2985,6 +3043,10 @@ initialization
   InitCDSDataConvertFix;
   {$ENDIF CDSDataConvertFix}
 
+  {$IFDEF ButtonControlColorStaticFix}
+  InitButtonControlColorStaticFix;
+  {$ENDIF ButtonControlColorStaticFix}
+
   {$IFDEF VistaCompareStringFix}
   InitCompareStringFix;
   {$ENDIF VistaCompareStringFix}
@@ -2995,6 +3057,10 @@ finalization
   {$IFDEF VistaCompareStringFix}
   FiniCompareStringFix;
   {$ENDIF VistaCompareStringFix}
+
+  {$IFDEF ButtonControlColorStaticFix}
+  FiniButtonControlColorStaticFix;
+  {$ENDIF ButtonControlColorStaticFix}
 
   {$IFDEF CDSDataConvertFix}
   FiniCDSDataConvertFix;
