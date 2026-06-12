@@ -107,6 +107,11 @@ type
   {$EXTERNALSYM TWideStringDynArray}
 {$endif}
 
+{$ifndef Delphi2007orNewerCompiler}
+  //UInt64 is known to be broken before Delphi 2007, even though since Delphi 7 the compiler recognizes it, so we have to re-define UInt64 to make it work.
+  UInt64 = Int64; //Unfortunately, there's no other way. Borland also uses Int64 in ActiveX.pas, so let's do that.
+{$endif}
+
 {$ifndef Delphi2009orNewerCompiler}
 //NativeInt and NativeUInt are not suitable before Delphi 2009, so let's supply our own.
 //More information:
@@ -165,6 +170,9 @@ type
   Float64 = Double;
 
   TEndian = (Big, Little);
+
+  TUInt64DynArray       = array of UInt64;
+  {$EXTERNALSYM TUInt64DynArray}
 {$endif}
 
   //To support pointer arithmetic, we need a custom datatype, because support for it has changed throughout the years.
@@ -206,7 +214,7 @@ type
   {$EXTERNALSYM LPBYTE}
 {$endif}
 
-  QWORD = {$ifdef Delphi2007orNewerCompiler}UInt64{$else}Int64{$endif}; //UInt64 is known to be broken before Delphi 2007, even if present. Borland also uses Int64 instead in ActiveX.pas
+  QWORD = UInt64;
   {$EXTERNALSYM QWORD}
   PQWORD = ^QWORD;
   {$EXTERNALSYM PQWORD}
@@ -255,7 +263,7 @@ type
   {$EXTERNALSYM PLONGLONG}
 
 {$ifndef Delphi2009orNewerCompiler}
-  DWORDLONG = {$ifdef Delphi2007orNewerCompiler}UInt64{$else}Int64{$endif}; //UInt64 is known to be broken before Delphi 2007, even if present. Borland also uses Int64 instead in ActiveX.pas
+  DWORDLONG = UInt64;
   {$EXTERNALSYM DWORDLONG}
 {$endif}
   PDWORDLONG = ^DWORDLONG;
@@ -264,7 +272,7 @@ type
   {$EXTERNALSYM LPDWORDLONG}
 
 {$ifndef Delphi2007orNewerCompiler}
-  ULONGLONG = {$ifdef Delphi2007orNewerCompiler}UInt64{$else}Int64{$endif}; //UInt64 is known to be broken before Delphi 2007, even if present. Borland also uses Int64 instead in ActiveX.pas
+  ULONGLONG = UInt64;
   {$EXTERNALSYM ULONGLONG}
 {$endif}
   PULONGLONG = ^ULONGLONG;
@@ -1133,7 +1141,7 @@ function EndsStr(const ASubText, AText: string): Boolean;
 
 {$ifndef Delphi2009orNewerCompiler}
 function UIntToStr(Value: Cardinal): string; overload;
-function UIntToStr(Value: {$ifdef Delphi2007orNewerCompiler}UInt64{$else}Int64{$endif}): string; overload; //UInt64 is known to be broken before Delphi 2007, even if present. Borland also uses Int64 instead in ActiveX.pas
+function UIntToStr(Value: UInt64): string; overload;
 
 function CharInSet(C: AnsiChar; const CharSet: TSysCharSet): Boolean; overload;{$IFDEF Delphi2005orNewerCompiler} inline;{$ENDIF}
 {$ifndef Delphi2orNewerCompiler}
@@ -1738,7 +1746,7 @@ begin
   FmtStr(Result, '%u', [Value]);
 end;
 
-function UIntToStr(Value: {$ifdef Delphi2007orNewerCompiler}UInt64{$else}Int64{$endif}): string; //UInt64 is known to be broken before Delphi 2007, even if present. Borland also uses Int64 instead in ActiveX.pas
+function UIntToStr(Value: UInt64): string;
 begin
   FmtStr(Result, '%u', [Value]);
 end;
