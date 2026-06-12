@@ -334,7 +334,7 @@ const
  DlgW  = 372;
  MemoH = 160;
  Margin = 8;
- Fallback4616 = '                     *** EXCEPTION REPORT ***'+sLineBreak+sLineBreak+'%s'+sLineBreak+'Compiled with: %s'+sLineBreak+'Address in the program: 0x%p (base: 0x%p)';
+ Fallback4616 = '                     *** EXCEPTION REPORT ***'+sLineBreak+sLineBreak+'Version: %s'+sLineBreak+'Compiled with: %s'+sLineBreak+'Address in the program: 0x%p (base: 0x%p)';
  Fallback4617 = 'Please report this error to the QuArK development team, so that they can fix the issue promptly.';
  Fallback5823 = '%s on %s';
 var
@@ -364,7 +364,7 @@ begin
  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, DateFormat);
  {$ENDIF}
  if IsPythonInited then
-  L.Add(AdjustLineBreaks(FmtLoadStr1(4616, [QuArKFullVersion, Format(LoadStr1(5823), [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))])))
+  L.Add(AdjustLineBreaks(FmtLoadStr1(4616, [QuArKFullVersion, FmtLoadStr1(5823, [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))])))
  else
   L.Add(Format(Fallback4616, [QuArKFullVersion, Format(Fallback5823, [QuArKUsedCompiler, DateToStr(QuArKCompileDate{$IFDEF Delphi7orNewerCompiler}, DateFormat{$ENDIF})]), ExceptAddrX, Pointer(GetModuleHandle(Nil))]));
  {$IFDEF Debug}
