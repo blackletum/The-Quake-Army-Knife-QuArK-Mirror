@@ -54,8 +54,8 @@ uses StrUtils, qhelper, QuarkX, QkExceptions, Setup, QkObjectClassList, Game, Qk
 (***********  Quake 3 .md3 format  ***********)
 const
   SignatureMdl3 = $33504449; //"IDP3" = Quake-3 Model file
-  SignatureMdlRMD5 = $354D4452; //"RDM5" = Star Trek Voyager: Elite Force Model file
-  SignatureMdlMGL2 = $44474C32; //"2LGM" = Soldier of Fortune 2 Model file
+  SignatureMdlRMD5 = $354D4452; //"RDM5" = MoDel Raven file - Raven Software's completed version of MD4, used in Star Trek Voyager: Elite Force and Star Trek: Elite Force II
+  SignatureMdlMGL2 = $44474C32; //"2LGM" = Raven Software's Ghoul2 Model file - Used in Soldier of Fortune 2 Model and Star Wars: Jedi Knight games
 
   MAX_QPATH = 64;
 
