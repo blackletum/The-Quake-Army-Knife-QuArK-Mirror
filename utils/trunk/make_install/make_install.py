@@ -262,20 +262,13 @@ def copy_runtime():
 def build_help():
 	print("Creating Help files...")
 
-	#Delete old output, if any
-	if os.path.exists(os.path.join(pathInfobase, "output")):
-		shutil.rmtree(os.path.join(pathInfobase, "output"))
-
-	proc = subprocess.run(("python", "build.py", "-local"), cwd=pathInfobase)
+	proc = subprocess.run(("python", "build.py", "--local", os.path.join(pathTemp, "help")), cwd=pathInfobase)
 	if proc.returncode != 0:
 		#if len(proc.stdout) != 0:
 		#	print(proc.stdout)
 		#if len(proc.stderr) != 0:
 		#	print(proc.stderr)
 		raise RuntimeError("Failed to create Help files!")
-
-	print("Copying Help files...")
-	shutil.copytree(os.path.join(pathInfobase, "output"), os.path.join(pathTemp, "help"))
 
 	if args.HELPZIP:
 		print("Zipping Help files...")
