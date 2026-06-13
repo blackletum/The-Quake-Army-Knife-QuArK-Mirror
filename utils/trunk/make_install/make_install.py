@@ -38,7 +38,7 @@ now = datetime.datetime.now()
 #   Handle command line arguments
 #
 args = argparse.ArgumentParser()
-args.add_argument('OUTPUTDIR', metavar='dir', help='Directory to move files to (must be fully qualified ie "c:\\quark\\install").')
+args.add_argument('OUTPUTDIR', metavar='dir', help='Directory to gather output files in (must be fully qualified ie "c:\\quark\\install").')
 args.add_argument('VERSION', metavar='version', help='Verify version of quark to build. Example: "6.6 Beta 8".') #FIXME: We need a version with spaces... PROBABLY.
 args.add_argument('--SNAPSHOT', required=False, help='Create a snapshot archive.')
 args.add_argument('--NIGHTLY', required=False, action='store_true', help='Create a nightly release.')
@@ -243,7 +243,7 @@ def copy_runtime():
 	print("Copying runtime files...")
 	excluded = set()
 	with open(os.path.join(pathMakeInstall, "exclude.txt"), mode="r") as inFile:
-		for line in inFile.readlines():
+		for line in inFile:
 			excluded.add(line.rstrip("\r\n"))
 	shutil.copytree(pathRuntime, pathTemp, ignore=shutil.ignore_patterns(*excluded), dirs_exist_ok=True)
 
@@ -261,6 +261,11 @@ def copy_runtime():
 #
 def build_help():
 	print("Creating Help files...")
+
+	#Delete old output, if any
+	if os.path.exists(os.path.join(pathInfobase, "output")):
+		shutil.rmtree(os.path.join(pathInfobase, "output"))
+
 	proc = subprocess.run(("python", "build.py", "-local"), cwd=pathInfobase)
 	if proc.returncode != 0:
 		#if len(proc.stdout) != 0:
@@ -286,7 +291,7 @@ def check_compile_date():
 	#Delphi doesn't have functionality to put the date of the compile in the executable, so we are doing this manually. Check that the date has actually been set to today!
 	compile_date = None
 	with open(os.path.join(pathSource, "prog", "QConsts.pas"), mode='r') as inFile:
-		for line in inFile.readlines():
+		for line in inFile:
 			parts = line.strip().split("=")
 			if len(parts) != 2:
 				continue
@@ -315,7 +320,7 @@ def build_exe():
 		raise RuntimeError("dcc32.cfg file already exists!")
 	with open(os.path.join(pathSource, "QuArK.cfg"), mode="r") as inFile:
 		with open(os.path.join(pathSource, "dcc32.cfg"), mode="w") as outFile:
-			for line in inFile.readlines():
+			for line in inFile:
 				if (line.strip() == "-$D-") and args.DEBUG:
 					outFile.write("-$D+\n") #$D- = no debug info
 				elif (line.strip() == "-$L+") and not args.DEBUG:
@@ -325,11 +330,16 @@ def build_exe():
 				else:
 					outFile.write(line)
 	try:
-		#B = recompile ALL units, H = show hints, W = show warnings, Q = don't list all the unit file names
-		if args.DEBUG:
-			proc = subprocess.run((pathDCC, "QuArK.dpr", "-B", "-DDEBUG", "-E%s" % (pathTemp, ), "-N%s" % (pathCompileTemp, ), "-H", "-W", "-Q"), cwd=pathSource, capture_output=True)
-		else:
-			proc = subprocess.run((pathDCC, "QuArK.dpr", "-B", "-E%s" % (pathTemp, ), "-N%s" % (pathCompileTemp, ), "-H", "-W", "-Q"), cwd=pathSource, capture_output=True)
+		#Note: Some compilers also find the QuArK.cfg file, and get confused. So let's move it out of the way.
+		os.rename(os.path.join(pathSource, "QuArK.cfg"), os.path.join(pathSource, "QuArK.cfg.real"))
+		try:
+			#B = recompile ALL units, H = show hints, W = show warnings, Q = don't list all the unit file names
+			if args.DEBUG:
+				proc = subprocess.run((pathDCC, "QuArK.dpr", "-B", "-DDEBUG", "-E%s" % (pathCompileTemp, ), "-N%s" % (pathCompileTemp, ), "-H", "-W", "-Q"), cwd=pathSource, capture_output=True)
+			else:
+				proc = subprocess.run((pathDCC, "QuArK.dpr", "-B", "-E%s" % (pathCompileTemp, ), "-N%s" % (pathCompileTemp, ), "-H", "-W", "-Q"), cwd=pathSource, capture_output=True)
+		finally:
+			os.rename(os.path.join(pathSource, "QuArK.cfg.real"), os.path.join(pathSource, "QuArK.cfg"))
 
 		#Save the compile logs.
 		with open(os.path.join(args.OUTPUTDIR, "compile.log"), mode='wb') as outFile:
@@ -340,20 +350,20 @@ def build_exe():
 		#Check if something went wrong.
 		if proc.returncode != 0:
 			raise RuntimeError("Failed to compile source - check \"compile.log\"!")
-		if not os.path.exists(os.path.join(pathTemp, "QuArK.exe")):
+		if not os.path.exists(os.path.join(pathCompileTemp, "QuArK.exe")):
 			raise RuntimeError("Compiler did not produce expected executable - check \"compile.log\"!")
 	finally:
 		os.remove(os.path.join(pathSource, "dcc32.cfg"))
 
 	#Move the debugging files.
 	if args.NIGHTLY:
-		shutil.move(os.path.join(pathTemp, "QuArK.map"), os.path.join(args.OUTPUTDIR, "QuArK_nightly_%s.map" % (nightly_date.strftime('%d%b%Y').lstrip("0"), )))
+		shutil.move(os.path.join(pathCompileTemp, "QuArK.map"), os.path.join(args.OUTPUTDIR, "QuArK_nightly_%s.map" % (nightly_date.strftime('%d%b%Y').lstrip("0"), )))
 	else:
-		shutil.move(os.path.join(pathTemp, "QuArK.map"), os.path.join(args.OUTPUTDIR, "QuArK_%s.map" % (args.VERSION, )))
+		shutil.move(os.path.join(pathCompileTemp, "QuArK.map"), os.path.join(args.OUTPUTDIR, "QuArK_%s.map" % (args.VERSION, )))
 
 	if args.MANIFEST:
 		print("Embedding manifest...")
-		proc = subprocess.run((pathMT, "-nologo", "-validate_manifest", "-canonicalize", "-check_for_duplicates", "-manifest", os.path.join(pathSource, "QuArK.manifest"), "-outputresource:QuArK.exe"), cwd=pathTemp, capture_output=True)
+		proc = subprocess.run((pathMT, "-nologo", "-validate_manifest", "-canonicalize", "-check_for_duplicates", "-manifest", os.path.join(pathSource, "QuArK.manifest"), "-outputresource:QuArK.exe"), cwd=pathCompileTemp, capture_output=True)
 		if proc.returncode != 0:
 			if len(proc.stdout) != 0:
 				print(proc.stdout)
@@ -363,7 +373,7 @@ def build_exe():
 
 	if args.COMPRESSEXE:
 		print("Compressing executable...")
-		proc = subprocess.run((pathUPX, "--best", "--ultra-brute", "--no-lzma", "--overlay=strip", "QuArK.exe"), cwd=pathTemp)
+		proc = subprocess.run((pathUPX, "--best", "--ultra-brute", "--no-lzma", "--overlay=strip", "QuArK.exe"), cwd=pathCompileTemp)
 		if proc.returncode != 0:
 			#if len(proc.stdout) != 0:
 			#	print(proc.stdout)
@@ -372,7 +382,7 @@ def build_exe():
 			raise RuntimeError("Failed to compress executable!")
 
 	#Copy executable into output directory.
-	shutil.copy2(os.path.join(pathTemp, "QuArK.exe"), args.OUTPUTDIR)
+	shutil.copy2(os.path.join(pathCompileTemp, "QuArK.exe"), args.OUTPUTDIR)
 
 	return
 
