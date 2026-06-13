@@ -315,10 +315,8 @@ begin
       Exit;
     end;
 
-    //Truncate the buffer, and add a null-terminator.
-    ReallocMem(StatusBuffer, BufferLength + SizeOf(Char));
-    PByte(PArithByte(StatusBuffer) + BufferLength)^:=0;
-    PByte(PArithByte(StatusBuffer) + BufferLength + 1)^:=0;
+    //Truncate the buffer.
+    ReallocMem(StatusBuffer, BufferLength + SizeOf(Char)); //Note: The returned byte count does not include the null-terminator.
 
     Result:=StrToIntDef(PChar(StatusBuffer), Default);
   finally
