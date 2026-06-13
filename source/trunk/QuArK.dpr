@@ -91,6 +91,17 @@ uses
 {$ENDIF}
 
   //
+  //Soft Gems Theme Manager
+  //
+{$IFNDEF Delphi7orNewerCompiler}
+  ThemeMgr in 'modules\SoftGemsThemeManager\ThemeMgr.pas',
+  //ThemeMgrDB in 'modules\SoftGemsThemeManager\ThemeMgrDB.pas',
+  ThemeSrv in 'modules\SoftGemsThemeManager\ThemeSrv.pas',
+  TmSchema in 'modules\SoftGemsThemeManager\TmSchema.pas',
+  UxTheme in 'modules\SoftGemsThemeManager\UxTheme.pas',
+{$ENDIF}
+
+  //
   // Delphi version compatibility
   //
   DelphiCompat in 'modules\DelphiCompat.pas',

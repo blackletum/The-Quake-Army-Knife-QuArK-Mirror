@@ -27,6 +27,7 @@ interface
 uses
   DelphiCompat, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkGroup, ExtCtrls, CommCtrl, QkExplorer, QkObjects,
+  {$IFNDEF Delphi7orNewerCompiler}ThemeMgr,{$ENDIF}
   QkFileObjects, Menus, TB97, QkFileExplorer, QkForm, ComCtrls;
 
 const
@@ -237,7 +238,7 @@ uses {$IFDEF MemTester}MemTester, {$ENDIF}ShellApi, Undo, QkQuakeC, Setup, Confi
   Running, Output1, QkTreeView, PyProcess, Console, Python, Quarkx, About,
   PyMapView, PyForms, Qk3D, EdSceneObject, ApplPaths, FileAssociations,
   QkExceptions, QkQuakeCtx, AutoUpdater, Toolbar1,
-  Splash, QConsts, Logging, SystemDetails, Platform{$IFDEF Delphi7orNewerCompiler}, UxTheme{$ENDIF}; //FIXME: Mike Lischke's Theme XP Manager would add support for Delphi 4-6.
+  Splash, QConsts, Logging, SystemDetails, Platform;
 
 type
   TCmdLineOptions = record
@@ -250,6 +251,12 @@ type
 var
   OnlyOnceMutex: THandle = 0;
   OldErrorMode: UInt;
+  {$IFNDEF Delphi7orNewerCompiler}
+  //Note: We can't put this in the form, because Delphi (at least 7)
+  //doesn't check IFDEF's when determining if a component needs to be deleted,
+  //and thus will forcefully delete it, including the IFDEF, breaking everything.
+  ThemeManager: TThemeManager;
+  {$ENDIF}
 
 const
   MaxRecentFilesUpperLimit = 20;
@@ -337,20 +344,6 @@ begin
     DefFontData.Name:=PChar(@Metrics.lfMessageFont.lfFaceName);
     DefFontData.Height:=Metrics.lfMessageFont.lfHeight;
   end;
-
-  {$IFDEF Delphi7orNewerCompiler} //FIXME: Mike Lischke's Theme XP Manager would add support for Delphi 4-6.
-  //Disable theming of controls for older Delphi's, because it's just too broken.
-  {$IFNDEF Delphi8orNewerCompiler} //FIXME: Not sure what version fixes enough, but at least Delphi 7 is broken.
-  (*InitThemeLibrary;
-  try
-    dwFlags := GetThemeAppProperties();
-    SetThemeAppProperties(dwFlags and not STAP_ALLOW_CONTROLS);
-    SendMessage(Application.Handle, WM_THEMECHANGED, 0, 0);
-  finally
-    FreeThemeLibrary;
-  end;*)
-  {$ENDIF}
-  {$ENDIF}
 end;
 
  {------------------------}
@@ -530,10 +523,17 @@ begin
      Splash.Close;
    end;
  end;
+
+ {$IFNDEF Delphi7orNewerCompiler}
+ ThemeManager:=TThemeManager.Create(Self);
+ {$ENDIF}
 end;
 
 destructor TForm1.Destroy;
 begin
+ {$IFNDEF Delphi7orNewerCompiler}
+ ThemeManager.Free;
+ {$ENDIF}
  inherited;
 
  //These need Python to function:
