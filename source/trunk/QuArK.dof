@@ -133,7 +133,7 @@ Comments=Original Coding by Armin Rigo
 Homepage=https://quark.sourceforge.io/
 [HistoryLists\hlDebugSourcePath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;.\3dfx;.\components;.\components\abbrevia;.\components\direct3d;.\modules;.\modules\FastCode;.\prog;.\prog\model;.\python
+Item0=$(DELPHI)\Lib\Debug;.;.\3dfx;.\components;.\components\abbrevia;.\components\direct3d;.\modules;.\modules\FastCode;.\modules\SoftGemsThemeManager;.\prog;.\prog\model;.\python
 [HistoryLists\hlConditionals]
 Count=2
 Item0=DEBUG
@@ -143,7 +143,7 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=1
-Item0=.;.\3dfx;.\components;.\components\abbrevia;.\components\direct3d;.\modules;.\modules\FastCode;.\prog;.\prog\model;.\python;$(DELPHI)\Source\Samples;$(DELPHI)\Lib
+Item0=.;.\3dfx;.\components;.\components\abbrevia;.\components\direct3d;.\modules;.\modules\FastCode;.\modules\SoftGemsThemeManager;.\prog;.\prog\model;.\python;$(DELPHI)\Source\Samples;$(DELPHI)\Lib
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=C:\QuArK cvs\trash
