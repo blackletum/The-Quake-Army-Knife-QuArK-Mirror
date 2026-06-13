@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
-import html.entities, datetime, time, os, sys
+import html.entities, argparse, datetime, os
 from format import *
 
-OutputPath = "output"
+args = None
 copyrightyear = datetime.date.today().year
 
 
@@ -43,13 +43,13 @@ def climbpath(curpath, relpath):
     if relpath[:3] == ".."+os.sep:
         return climbpath(curpath[:-1], relpath[3:])
     else:
-        if verboseMode:
+        if args.verbose:
             print('CURPATH ' + curpath)
         if curpath != []:
             newpath = os.sep.join(curpath + [relpath])
         else:
             newpath = relpath
-        if verboseMode:
+        if args.verbose:
             print('NEWPATH ' + newpath)
         return newpath
 
@@ -63,7 +63,7 @@ def relpath(curpath, relpath):
     return relpath
 
 def findref(root, path, name, fkw, extraargs):
-    if verboseMode:
+    if args.verbose:
         print('FKW: ' + fkw["path"])
 
 #    def ref(refnormal, refwithname, kw, name=name, extraargs):
@@ -75,9 +75,9 @@ def findref(root, path, name, fkw, extraargs):
             return refwithname % kw
 
     path = relpath(fkw["path"], path)
-    if verboseMode:
-        print('PATH: ' + path)
-        print('name: ' + name)
+    if args.verbose:
+        print('PATH:', path)
+        print('name:', name)
     parts = path.split(os.sep)
     pathsofar = ""
     while parts:
@@ -121,27 +121,27 @@ def procpic(kw, path, extraargs):
         img = '<img src="%s">' % (picrl)
     else:
         img = '<img %s src="%s">' % (extraargs, picrl)
-    data = open(kw["path"]+path, "rb").read()
-    with open(os.path.join(OutputPath, picrl), "wb") as f:
+    data = open(kw["path"]+path, mode="rb").read()
+    with open(os.path.join(args.outputpath, picrl), mode="wb") as f:
         f.write(data)
 #    self.forgotten.remove(path)
     return img
 
 def procrsc(kw, path):
     rscrl = ".".join(list(filter(None, kw["path"].split(os.sep)))+[path])
-    data = open(kw["path"]+path, "rb").read()
-    with open(os.path.join(OutputPath, rscrl), "wb") as f:
+    data = open(kw["path"]+path, mode="rb").read()
+    with open(os.path.join(args.outputpath, rscrl), mode="wb") as f:
         f.write(data)
 #    self.forgotten.remove(path)
     return '"%s"' % rscrl
 
 def proczip(kw, path):
 #    self.forgotten.remove(path)
-    if localMode:
-        data = open(os.path.join(ZIPLOC, path), "rb").read()
-        if not os.path.exists(os.path.join(OutputPath, ZIPLOC)):
-            os.mkdir(os.path.join(OutputPath, ZIPLOC))
-        with open(os.path.join(OutputPath, ZIPLOC, path), "wb") as f:
+    if args.local:
+        data = open(os.path.join(ZIPLOC, path), mode="rb").read()
+        if not os.path.exists(os.path.join(args.outputpath, ZIPLOC)):
+            os.mkdir(os.path.join(args.outputpath, ZIPLOC))
+        with open(os.path.join(args.outputpath, ZIPLOC, path), mode="wb") as f:
             f.write(data)
         return '<a href="%s%s">%s</a>' % (ZIPLOC, path, path)
     else:
@@ -390,7 +390,7 @@ def processtext(root, self, data):
 
 def parse(file):
     try:
-        f = open(file, "r")
+        f = open(file, mode="r")
     except:
         raise RuntimeError("File missing: %s" % file)
     try:
@@ -429,35 +429,35 @@ class Extra:
 class ExtraDir(Extra):
     def write(self, filewriter):
         try:
-            os.mkdir(os.path.join(OutputPath, self.filename))
+            os.mkdir(os.path.join(args.outputpath, self.filename))
         except (FileExistsError):
             pass
 
 class ExtraFile(Extra):
     def write(self, filewriter):
-        filewriter(self.filename, [open(os.path.join(self.parent.path, self.filename), "r").read()])
+        filewriter(self.filename, [open(os.path.join(self.parent.path, self.filename), mode="r").read()])
 
 class ExtraBinary(Extra):
     def write(self, filewriter):
-        filewriter(self.filename, [open(os.path.join(self.parent.path, self.filename), "rb").read()], "wb")
+        filewriter(self.filename, [open(os.path.join(self.parent.path, self.filename), mode="rb").read()], "wb")
 
 class Folder:
     def __init__(self, path, classif, parents, prev=None):
         self.prev = prev
         self.parents = parents
         self.path = path
-        if verboseMode:
+        if args.verbose:
             print('Path: '+self.path)
         self.classif = classif
         if classif: # Decker
             shortname = "".join(map(lambda s: s+".", classif)) + "&nbsp;"
         else: # Decker
             shortname = "" # Decker - Make the 'index.html' title _not_ prefixed with a single space
-        if verboseMode:
+        if args.verbose:
             print(shortname,)
         self.kw, self.text, lastmodifydate = parse(self.path + "index" + EXTENSION)
         s = self.kw["title"]
-        if verboseMode:
+        if args.verbose:
             print(s)
         self.kw["htmltitle"] = text2html_nbsp(s)
         self.kw["htmltitleshort"] = text2html_nbsp(s, 25) # Decker - Try to prevent text-wrapping, so make it max 25 characters long
@@ -497,7 +497,7 @@ class Folder:
                 lastmodifydate = file.lastmodifydate
             file.kw["htmlfile"] = shortname
             file.kw["hrefaname"] = filename
-            file.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(file.lastmodifydate))
+            file.kw["updateday"] = datetime.datetime.fromtimestamp(file.lastmodifydate).strftime("%d %b %Y")
             file.kw["path"] = path  # tiglari         @: Gotta go away!
             self.files.append(file)  #@(kw, text)
             self.forgotten.remove(filename + EXTENSION)
@@ -523,7 +523,7 @@ class Folder:
             if extra_filename.lower() in self.forgotten:
                self.forgotten.remove(extra_filename.lower())
         self.lastmodifydate = lastmodifydate
-        self.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate))
+        self.kw["updateday"] = datetime.datetime.fromtimestamp(lastmodifydate).strftime("%d %b %Y")
         # Setup backwards navigation links
         if not parents:
             lvl = MAINHEADERLVL
@@ -552,7 +552,7 @@ class Folder:
             folder.navigation()
 
     def writefiles(self, root, filewriter):
-        if verboseMode:
+        if args.verbose:
             print('writing file: ' + self.kw["htmlfile"], "  [%s]" % self.kw["title"])
         filewriter(self.kw["htmlfile"], self.makefile(root))
         for extra_file in self.extras:
@@ -643,7 +643,7 @@ class Folder:
 
 def defaultwriter(filename, data, writemode="w"):
     # write the target file
-    with open(os.path.join(OutputPath, filename), writemode) as f:
+    with open(os.path.join(args.outputpath, filename), mode=writemode) as f:
         f.writelines(data)
 
 def run(filewriter):
@@ -656,8 +656,8 @@ def run(filewriter):
     # load format file
     # create additional output directories, if needed
     if PICLOC != '':
-        if not os.path.exists(os.path.join(OutputPath, PICLOC)):
-            os.mkdir(os.path.join(OutputPath, PICLOC))
+        if not os.path.exists(os.path.join(args.outputpath, PICLOC)):
+            os.mkdir(os.path.join(args.outputpath, PICLOC))
 
     # recursively load everything in memory
     printline("FINDING ALL FILES")
@@ -675,21 +675,19 @@ def run(filewriter):
     root.forgotten.clear() #Ignore all "forgotten" files from the root directory
     root.viewforgotten()
 
-localMode=0
-verboseMode=0
-for flag in sys.argv:
-    if flag=='-local':
-        localMode=1
-    if flag=='-verbose':
-        verboseMode=1
+args = argparse.ArgumentParser()
+args.add_argument('outputpath', nargs='?', default='output', help='Directory where all the output should go to.')
+args.add_argument('--local', required=False, action='store_true', help='Make the disk-based version, instead of the web-based version.')
+args.add_argument('--verbose', required=False, action='store_true', help='More verbose output.')
+args = args.parse_args()
 
-if localMode:
+if args.local:
     print("Building for installer...")
 else:
     print("Building for web deployment...")
 
-if not os.path.exists(OutputPath):
-    os.mkdir(OutputPath)
+if not os.path.exists(args.outputpath):
+    os.mkdir(args.outputpath)
 else:
     print("WARNING: Output directory already exists!")
 

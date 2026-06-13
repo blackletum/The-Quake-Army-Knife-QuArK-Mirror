@@ -75,7 +75,7 @@ Some special tags, that <tt>build.py</tt> checks for:
       allow direct downloading of .zip files from ordinary web-pages. Archives
       are expected to appear in the subfolder <tt>zips</tt>.  How they are
       processed depends on whether <TT>build.py</TT> is launched with the
-      command-line argument <tt>-local</tt> or not.  If it is, then the archive
+      command-line argument <tt>--local</tt> or not.  If it is, then the archive
       file is copied into the a subfolder <tt>zips</tt> in <tt>output</tt>, and
       a suitable link generated.  If it isn't (the default), then no copying
       happens, and the link is prefixed by the value of the string
