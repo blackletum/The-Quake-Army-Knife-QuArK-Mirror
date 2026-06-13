@@ -429,7 +429,7 @@ end;
 
 procedure DebugLog(const S: string);
 begin
-  OutputDebugString(PChar('VCLFixPack patch installed: ' + S));
+  OutputDebugString(PChar('VCLFixPack patch installed: ' + S + sLineBreak)); //DanielPharos
 end;
 { ---------------------------------------------------------------------------- }
 
@@ -517,7 +517,7 @@ procedure InitTaskModalDialogFix;
 begin
   InitializeCriticalSection(DialogsTaskModalDialogCritSect);
   HookProc(@TOpenCommonDialog.TaskModalDialog, @TCommonDialog_TaskModalDialog, DialogsTaskModalDialogHook);
-  DebugLog('FixTaskModalDialog');
+  DebugLog('TaskModalDialogFix'); //DanielPharos
 end;
 
 procedure FiniTaskModalDialogFix;
@@ -2582,7 +2582,7 @@ end;
 
 procedure InitButtonControlColorStaticFix;
 begin
-  DebugLog('FixButtonControlColorStatic');
+  DebugLog('ButtonControlColorStaticFix');
   ReplaceVmtField(TButtonControl, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
   ReplaceVmtField(TCustomCheckBox, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
   ReplaceVmtField(TCheckBox, @TButtonControlFix.WndProc, @TButtonControlFix.NewWndProc);
