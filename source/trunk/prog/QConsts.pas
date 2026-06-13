@@ -188,7 +188,7 @@ const
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
-  QuArKCompileDate        = 45893;   //This is the compiled date
+  QuArKCompileDate        = 46186;   //This is the compiled date
   { Amount of days that have passed after 30 Dec 1899 (Delphi 2+).
     You can use EncodeDate(Year, Month, Day) to compute it, but this value
     really needs to be a constant, so put the resulting value in here.
@@ -205,7 +205,7 @@ const
   QuArKUpdateSiteSSL      = True;
   QuArKUpdateFile         = '/update/index.dat';
 
-function QuArKFullVersion() : String; {$IFDEF Delphi2005orNewerCompiler} inline;{$ENDIF}
+function QuArKFullVersion() : String;{$IFDEF Delphi2005orNewerCompiler} inline;{$ENDIF}
 
 implementation
 
