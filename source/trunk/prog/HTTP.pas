@@ -43,7 +43,7 @@ type
     procedure ConnectTo(const HostName: string; const UseSSL: Boolean = False);
     procedure CloseConnect;
     procedure FileRequest(const FileName: string);
-    function FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
+    function FileQueryInfo(Flag: DWORD; Default: Cardinal = 0): Cardinal;
     procedure CloseRequest;
     procedure ReadFile(FileData: TMemoryStream; DataStart, DataLength: cardinal);
     //Easy-to-use function:
@@ -104,7 +104,7 @@ var
   {$EXTERNALSYM HttpOpenRequest}
   HttpSendRequest: function(hRequest: HINTERNET; lpszHeaders: LPCTSTR; dwHeadersLength: DWORD; lpOptional: Pointer; dwOptionalLength: DWORD): BOOL; stdcall;
   {$EXTERNALSYM HttpSendRequest}
-  HttpQueryInfo: function(hRequest: HINTERNET; dwInfoLevel: DWORD; lpvBuffer: Pointer; var lpdwBufferLength: DWORD; var lpdwReserved: DWORD): BOOL; stdcall;
+  HttpQueryInfo: function(hRequest: HINTERNET; dwInfoLevel: DWORD; lpvBuffer: Pointer; var lpdwBufferLength: DWORD; var lpdwIndex: DWORD): BOOL; stdcall;
   {$EXTERNALSYM HttpQueryInfo}
   //InternetSetFilePointer: function(hFile: HINTERNET; lDistanceToMove: Longint; pReserved: Pointer; dwMoveMethod, dwContext: DWORD): DWORD; stdcall;
   InternetSetFilePointer: function(hFile: HINTERNET; lDistanceToMove: Longint; lpDistanceToMoveHigh: PLongint; dwMoveMethod, dwContext: DWORD_PTR): DWORD; stdcall;
@@ -233,7 +233,7 @@ end;
 procedure THTTPConnection.ConnectTo(const HostName: string; const UseSSL: Boolean);
 begin
   if not Online then
-    raise exception.create('Not online.');
+    raise Exception.Create('Not online.');
   if Connected then
     CloseConnect;
 
@@ -264,15 +264,15 @@ end;
 procedure THTTPConnection.FileRequest(const FileName: string);
 begin
   if not Connected then
-    raise exception.create('Not connected.');
+    raise Exception.Create('Not connected.');
   if Requesting then
     CloseRequest;
 
   //We might need to set this as accepted type: 'binary/octet-stream'
   if UsingSSL then
-    InetResource:=HttpOpenRequest(InetConnection, PChar('GET'), PChar(FileName), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE + INTERNET_FLAG_SECURE, 0)
+    InetResource:=HttpOpenRequest(InetConnection, 'GET', PChar(FileName), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE + INTERNET_FLAG_SECURE, 0)
   else
-    InetResource:=HttpOpenRequest(InetConnection, PChar('GET'), PChar(FileName), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE, 0);
+    InetResource:=HttpOpenRequest(InetConnection, 'GET', PChar(FileName), nil, nil, nil, INTERNET_FLAG_RELOAD + INTERNET_FLAG_NO_CACHE_WRITE, 0);
   if InetResource=nil then
     LogAndRaiseLastOSError('Can not access file to download.');
   if HttpSendRequest(InetResource, nil, 0, nil, 0)=false then
@@ -294,20 +294,19 @@ begin
   InetResource:=nil;
 end;
 
-function THTTPConnection.FileQueryInfo(Flag: DWORD; Default: Integer = 0): Integer;
+function THTTPConnection.FileQueryInfo(Flag: DWORD; Default: Cardinal = 0): Cardinal;
 var
   StatusBuffer: PByte;
   BufferLength: DWORD;
   HeaderIndex: DWORD;
 begin
   if not Requesting then
-    raise exception.create('Not requesting.');
+    raise Exception.Create('Not requesting.');
 
   GetMem(StatusBuffer, StatusBufferLength);
   try
     HeaderIndex:=0;
     BufferLength:=StatusBufferLength;
-
     if HttpQueryInfo(InetResource, Flag, StatusBuffer, BufferLength, HeaderIndex)=false then
     begin
       LogWindowsError(GetLastError(), 'THTTPConnection.FileQueryInfo: HttpQueryInfo failed!');
@@ -318,19 +317,19 @@ begin
     //Truncate the buffer.
     ReallocMem(StatusBuffer, BufferLength + SizeOf(Char)); //Note: The returned byte count does not include the null-terminator.
 
-    Result:=StrToIntDef(PChar(StatusBuffer), Default);
+    Result:=StrToUIntDef(PChar(StatusBuffer), Default);
   finally
     FreeMem(StatusBuffer);
   end;
 end;
 
-procedure THTTPConnection.ReadFile(FileData: TMemoryStream; DataStart, DataLength: cardinal);
+procedure THTTPConnection.ReadFile(FileData: TMemoryStream; DataStart, DataLength: Cardinal);
 var
   Buffer: PByte;
   BufferLength: DWORD;
 begin
   if not Requesting then
-    raise exception.create('Not requesting.');
+    raise Exception.Create('Not requesting.');
 
   if DataStart<>0 then
   begin
@@ -355,7 +354,7 @@ begin
   if FileData.Position <> FileData.Size then
   begin
     Log(LOG_WARNING, 'THTTPConnection.ReadFile: FileData does NOT fill buffer completely!');
-    Buffer:=AllocMem(FileData.Size - FileData.Position);
+    Buffer:=AllocMem(FileData.Size - FileData.Position); //FIXME: This is a memory-intensive way of writing zeroes.
     try
       FileData.WriteBuffer(Buffer, FileData.Size - FileData.Position);
     finally
@@ -366,11 +365,10 @@ end;
 
 procedure THTTPConnection.GetFile(const FileName: string; FileData: TMemoryStream);
 var
-  StatusValue: Integer;
-  ResourceSize: Cardinal;
+  StatusValue, ResourceSize: Cardinal;
 begin
   if not Connected then
-    raise exception.create('Cannot download file: not connected.');
+    raise Exception.Create('Cannot download file: not connected.');
 
   FileRequest(FileName);
   try
@@ -379,19 +377,15 @@ begin
     begin
       Log(LOG_WARNING, 'THTTPConnection.GetFile: Wrong HTTP status: %d!', [StatusValue]);
       //FIXME: Properly handle StatusValue!
-      raise exception.create('Cannot download file: file info query failed.');
+      raise Exception.Create('Cannot download file: file info query failed.');
     end;
 
-    //Retrieve the index-filesize...
     ResourceSize:=FileQueryInfo(HTTP_QUERY_CONTENT_LENGTH, 0);
-    if ResourceSize=0 then
-    begin
-      //DanielPharos: This is not considered to be an error.
-      //raise exception.create('Cannot download file: Filesize is zero.');
-      Exit;
-    end;
+    //DanielPharos: ResourceSize=0 might mean an empty file, or that the header was not found.
+    //So try reading it anyway!
 
     ReadFile(FileData, 0, ResourceSize);
+    FileData.Seek(0, soFromBeginning); //Rewind
   finally
     CloseRequest;
   end;

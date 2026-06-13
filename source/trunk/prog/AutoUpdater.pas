@@ -35,9 +35,9 @@ type
   TUpdateNotification = record
     InternalName: String;
     InternalBuildNumber: Cardinal;
-    FileName: String; //@
-    BuildNumber: Cardinal; //@
-    //@
+    FileName: String; //FIXME: Unused
+    BuildNumber: Cardinal; //FIXME: Unused
+    //FIXME: Finish implementing this!
   end;
 
   // This record contains the package file array from the index file
@@ -97,7 +97,7 @@ type
     Name: String;
     Description: String;
     BuildNumber: Cardinal;
-//@    Priority: TUpdatePriority;
+    //Priority: TUpdatePriority;
     FileNR: Cardinal;
     Files: array of TPackageItem;
     Install: Boolean;
@@ -348,8 +348,6 @@ begin
             UpdateConnection.GetFile(QuArKUpdateFile, FileData);
             ProgressIndicatorIncrement;
 
-            FileData.Seek(0, soFromBeginning);
-
             ParseIndexFile(UpdateIndexFile, FileData);
             ProgressIndicatorIncrement;
           finally
@@ -387,8 +385,6 @@ begin
                 try
                   UpdateConnection.GetFile(UpdateNotifications[NewIndex].FileName, FileData);
                   ProgressIndicatorIncrement;
-
-                  FileData.Seek(0, soFromBeginning);
 
                   ParseNotificationFile(UpdateNotifications[NewIndex], FileData);
                   ProgressIndicatorIncrement;
@@ -429,8 +425,6 @@ begin
                 try
                   UpdateConnection.GetFile(UpdatePackages[NewIndex].FileName, FileData);
                   ProgressIndicatorIncrement;
-
-                  FileData.Seek(0, soFromBeginning);
 
                   ParsePackageFile(UpdatePackages[NewIndex], FileData);
                   ProgressIndicatorIncrement;
