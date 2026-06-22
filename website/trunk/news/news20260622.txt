@@ -1,0 +1,8 @@
+<author>DanielPharos</author>
+<headline>30 years young!</headline>
+
+<p>It's hard to believe, but it's been 30 years since the first shareware version of Quake was published! And Quake still is alive and kicking. There was the 2021 release of the Quake Enhanced edition. And there's the new <a target="_blank" href="https://cssquake.com/">cssQuake</a>, which renders the game using HTML and CSS, in other words, purely in your browser. You can also play a multiplayer game in your browser, using <a target="_blank" href="https://q1.pieter.com/">pieter.com</a>. Conclusion: there's no good reason NOT to play Quake. So what are you waiting for?!</p>
+
+
+<p>Happy Quaking,<br>
+DanielPharos</p>
