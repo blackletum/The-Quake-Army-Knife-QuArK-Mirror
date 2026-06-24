@@ -250,6 +250,7 @@ type
 
 var
   OnlyOnceMutex: THandle = 0;
+  OnlyOnceMutexOwned: Boolean = false;
   OldErrorMode: UInt;
   {$IFNDEF Delphi7orNewerCompiler}
   //Note: We can't put this in the form, because Delphi (at least 7)
@@ -356,7 +357,6 @@ var
  I: Integer;
  S: String;
  Splash: TSplashScreen;
- MutexError: DWORD;
  LaunchOptions: TCmdLineOptions;
  Setup: QObject;
  TimerID: {$IFDEF WIN64}UINT_PTR{$ELSE}UINT{$ENDIF};
@@ -378,38 +378,37 @@ begin
  // ParamStr(0) is the executable name, so don't process it
  for I := 1 to ParamCount do
  begin
-  S := UpperCase(ParamStr(I));
-  if S = '/?' then
-   Application.MessageBox('Available parameters:' + sLineBreak
-   + sLineBreak
-   + '/?: Displays this window' + sLineBreak
-   + '/NOINSTANCE: Skips the single-instance check (use at own risk!)' + sLineBreak
-   + '/NOSPLASH: Skips the splash-screen' + sLineBreak
-   + '/NOUPDATE: Skips the update check' + sLineBreak
-   + sLineBreak
-   + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_TASKMODAL or MB_OK)
-  else if S = '/NOINSTANCE' then
-   LaunchOptions.DoInstance := false
-  else if S = '/NOSPLASH' then
-   LaunchOptions.DoSplash := false
-  else if S = '/NOUPDATE' then
-   LaunchOptions.DoUpdate := false
-  else
-   FilesToOpen.Add(ParamStr(I));
+   S := ParamStr(I);
+   Log(LOG_INFO, 'Got a command line parameter: %s', [S]);
+   S := UpperCase(S);
+   if S = '/?' then
+     Application.MessageBox('Available parameters:' + sLineBreak
+     + sLineBreak
+     + '/?: Displays this window' + sLineBreak
+     + '/NOINSTANCE: Skips the single-instance check (use at own risk!)' + sLineBreak
+     + '/NOSPLASH: Skips the splash-screen' + sLineBreak
+     + '/NOUPDATE: Skips the update check' + sLineBreak
+     + sLineBreak
+     + 'All other parameters will be interpreted as files to load.', 'QuArK', MB_TASKMODAL or MB_OK)
+   else if S = '/NOINSTANCE' then
+     LaunchOptions.DoInstance := false
+   else if S = '/NOSPLASH' then
+     LaunchOptions.DoSplash := false
+   else if S = '/NOUPDATE' then
+     LaunchOptions.DoUpdate := false
+   else
+     FilesToOpen.Add(ParamStr(I));
  end;
 
- //This is the mutex for single-instance checking
- Log(LOG_VERBOSE, 'Checking mutex...');
- OnlyOnceMutex:=CreateMutex(Nil, True, PChar(MutexName));
- if OnlyOnceMutex = 0 then
+ if LaunchOptions.DoInstance then
  begin
-   //Something went terribly wrong!
-   LogWindowsError(GetLastError(), 'CreateMutex("'+MutexName+'")');
-   Application.MessageBox(PChar('Unable to check if there already is an instance of QuArK running! If this is the case, this can cause serious problems. For example, changed configuration settings might not be saved, and QuArK might not update correctly.'), 'QuArK', MB_TASKMODAL or MB_OK or MB_ICONWARNING);
-   MutexError := 0;
- end
- else
-   MutexError := GetLastError();
+   //This is the mutex for single-instance checking
+   Log(LOG_VERBOSE, 'Checking mutex...');
+   OnlyOnceMutex := CreateMutex(Nil, True, PChar(MutexName));
+   if OnlyOnceMutex = 0 then
+     LogAndRaiseLastOSError('Call to CreateMutex failed.');
+   OnlyOnceMutexOwned := (GetLastError() <> ERROR_ALREADY_EXISTS);
+ end;
 
  // Splash & nag screens
  if LaunchOptions.DoSplash then
@@ -450,7 +449,7 @@ begin
      Setup:=SetupSubSet(ssGeneral, 'Startup');
      if LaunchOptions.DoInstance and (Setup.Specifics.Strings['SingleInstance']<>'') then
      begin
-       if MutexError = ERROR_ALREADY_EXISTS then
+       if not OnlyOnceMutexOwned then
        begin
          S:='An instance of QuArK is already running. This can cause serious problems.';
          S:=S+' For example, changed configuration settings might not be saved, and QuArK might not update correctly.' + sLineBreak;
@@ -543,7 +542,11 @@ begin
 
  if OnlyOnceMutex <> 0 then
  begin
-   ReleaseMutex(OnlyOnceMutex);
+   if OnlyOnceMutexOwned then
+   begin
+     ReleaseMutex(OnlyOnceMutex);
+     OnlyOnceMutexOwned:=false;
+   end;
    CloseHandle(OnlyOnceMutex);
    OnlyOnceMutex:=0;
  end;
