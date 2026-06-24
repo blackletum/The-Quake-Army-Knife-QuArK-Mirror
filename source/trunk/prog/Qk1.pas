@@ -494,12 +494,13 @@ begin
      Application.OnShowHint:=AppShowHint;
      Application.OnHint:=AppHint;
    except
-     Splash.Terminate;
+     if Splash<>nil then
+       Splash.Terminate;
      raise;
    end;
  finally
    // Wait for splash screen to close
-   if LaunchOptions.DoSplash then
+   if Splash<>nil then
    begin
      Log(LOG_VERBOSE, 'Waiting for splash screen...');
      TimerID:=SetTimer(0, 0, TimerInterval, nil); //Create a timer to periodically wake up to check the WaitHandle.
@@ -528,8 +529,11 @@ end;
 destructor TForm1.Destroy;
 begin
  {$IFNDEF Delphi7orNewerCompiler}
- ThemeManager.Free;
+ if ThemeManager<>nil then
+   ThemeManager.Free;
  {$ENDIF}
+ if FilesToOpen<>nil then
+   FilesToOpen.Free;
  inherited;
 
  //These need Python to function:
