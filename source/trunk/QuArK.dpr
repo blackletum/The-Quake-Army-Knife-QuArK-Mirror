@@ -65,6 +65,9 @@ uses
 {$IFDEF Delphi6orNewerCompiler}{$IFNDEF Delphi2010orNewerCompiler}{$IFDEF CPUX86}
   VCLFixPack in 'modules\VCLFixPack.pas',
 {$ENDIF}{$ENDIF}{$ENDIF}
+{$IFDEF CompiledWithDelphi7}
+  D7DoubleBufferedThemeFix in 'modules\D7DoubleBufferedThemeFix.pas',
+{$ENDIF}
 {$IFDEF Delphi6orNewerCompiler}{$IFNDEF DelphiXE2orNewerCompiler}
   ControlsAtomFix in 'modules\ControlsAtomFix.pas',
 {$ENDIF}{$ENDIF}
