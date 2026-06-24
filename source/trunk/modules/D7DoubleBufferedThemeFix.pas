@@ -167,6 +167,8 @@ var
   Button_CNCtlColorBtn: Pointer;
   BackupWinControlWMEraseBkgnd, BackupButtonControlCNCtlColorStatic,
   BackupButtonCNCtlColorBtn: TXRedirCode;
+  ButtonControl_CNCtlColorStaticCritSect: TRTLCriticalSection; //DanielPharos
+  Button_CNCtlColorBtnCritSect: TRTLCriticalSection; //DanielPharos
 
 type
   TD7DoubleBufferedThemeButton = class(TButton)
@@ -196,7 +198,20 @@ begin
     Message.Result := GetStockObject(NULL_BRUSH);
   end
   else
-    inherited;
+  begin //DanielPharos
+    EnterCriticalSection(Button_CNCtlColorBtnCritSect);
+    try
+      UnhookProc(Button_CNCtlColorBtn, BackupButtonCNCtlColorBtn);
+      try
+        inherited; // "inherited" is required here, otherwise this would be an endless recursion
+      finally
+        HookProc(Button_CNCtlColorBtn, @TD7DoubleBufferedThemeButton.CNCtlColorBtn,
+          BackupButtonCNCtlColorBtn);
+      end;
+    finally
+      LeaveCriticalSection(Button_CNCtlColorBtnCritSect);
+    end;
+  end;
 end;
 
 procedure TD7DoubleBufferedThemeWinControl.WMEraseBkgnd(var Message: TWmEraseBkgnd);
@@ -231,11 +246,26 @@ begin
     Message.Result := GetStockObject(NULL_BRUSH);
   end
   else
-    inherited;
+  begin //DanielPharos
+    EnterCriticalSection(ButtonControl_CNCtlColorStaticCritSect);
+    try
+      UnhookProc(ButtonControl_CNCtlColorStatic, BackupButtonControlCNCtlColorStatic);
+      try
+        inherited; // "inherited" is required here, otherwise this would be an endless recursion
+      finally
+        HookProc(ButtonControl_CNCtlColorStatic, @TD7DoubleBufferedThemeButtonControl.CNCtlColorStatic,
+          BackupButtonControlCNCtlColorStatic);
+      end;
+    finally
+      LeaveCriticalSection(ButtonControl_CNCtlColorStaticCritSect);
+    end;
+  end;
 end;
 
 procedure InitD7DoubleBufferedThemeFix;
 begin
+  InitializeCriticalSection(Button_CNCtlColorBtnCritSect); //DanielPharos
+  InitializeCriticalSection(ButtonControl_CNCtlColorStaticCritSect); //DanielPharos
   WinControl_WMEraseBkgnd := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if WinControl_WMEraseBkgnd <> nil then
   begin
@@ -268,6 +298,8 @@ begin
   UnhookProc(WinControl_WMEraseBkgnd, BackupWinControlWMEraseBkgnd);
   UnhookProc(ButtonControl_CNCtlColorStatic, BackupButtonControlCNCtlColorStatic);
   UnhookProc(Button_CNCtlColorBtn, BackupButtonCNCtlColorBtn);
+  DeleteCriticalSection(ButtonControl_CNCtlColorStaticCritSect); //DanielPharos
+  DeleteCriticalSection(Button_CNCtlColorBtnCritSect); //DanielPharos
 end;
 {$ENDIF D7DoubleBufferedTheme}
 {---------------------------------------------------------------------------}
