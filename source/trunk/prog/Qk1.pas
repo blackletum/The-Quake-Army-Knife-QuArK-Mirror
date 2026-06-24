@@ -176,7 +176,7 @@ type
     {DefaultTbCount,} OpenFilterIndex: Integer;
     FNoTempDelete: Boolean;
    {TbMenuChar: Char;}
-    FilesToOpen: array of string;
+    FilesToOpen: TStringList;
     procedure ReadSetupInformation(Level: Integer);
    {function LoadToolBoxInformation(SetupQrk: QObject) : Integer;}
     function LoadToolBoxList(SetupQrk: QObject) : Integer;
@@ -373,7 +373,7 @@ begin
  LaunchOptions.DoSplash := true;
  LaunchOptions.DoUpdate := true;
  LaunchOptions.OnlineUpdate := true;
- SetLength(FilesToOpen, 0);
+ FilesToOpen:=TStringList.Create;
 
  // ParamStr(0) is the executable name, so don't process it
  for I := 1 to ParamCount do
@@ -395,10 +395,7 @@ begin
   else if S = '/NOUPDATE' then
    LaunchOptions.DoUpdate := false
   else
-  begin
-   SetLength(FilesToOpen, Length(FilesToOpen) + 1);
-   FilesToOpen[Length(FilesToOpen) - 1] := ParamStr(I);
-  end;
+   FilesToOpen.Add(ParamStr(I));
  end;
 
  //This is the mutex for single-instance checking
@@ -2108,10 +2105,10 @@ end;
 function TForm1.ExecuteCmdLine(Counter: Integer) : Integer;
 begin
  Inc(Counter);
- if Counter>Length(FilesToOpen) then
+ if Counter>FilesToOpen.Count then
   begin
    //Done loading all (if any) files from the commandline. Now process the last remaining things to-do...
-   SetLength(FilesToOpen, 0);
+   FreeAndNil(FilesToOpen);
    RestoreAutoSaved('.qkm');
    RestoreAutoSaved('.qkl'); //FIXME: This never runs! AutoRestoreEvent is made! --> Right, dump that CreateEvent. We're already using the CreateMutex above. Just put a tip in the documentation about this!!!
    Counter:=-1;
