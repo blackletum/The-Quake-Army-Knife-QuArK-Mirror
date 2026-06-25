@@ -2099,14 +2099,9 @@ end;
 
 procedure TForm1.FormActivate(Sender: TObject);
 begin
- OnActivate:=Nil;
+ OnActivate:=Nil; //Run only on first activation.
  DragAcceptFiles(Handle, True);
- try
-  if PyDict_GetItemString(QuarkxDict, 'setupchanged')<>Py_None then
-   StartIdleJob(ExecuteCmdLine, Self);
- finally
-  PythonCodeEnd;
- end;
+ StartIdleJob(ExecuteCmdLine, Self);
 end;
 
 function TForm1.ExecuteCmdLine(Counter: Integer) : Integer;
