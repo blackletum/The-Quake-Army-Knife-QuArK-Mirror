@@ -838,7 +838,7 @@ end;
 procedure LoadVFlat(var PrevV1: TV1; PV: PVertex3D); forward;
 procedure LoadV3D(var PrevV1: TV1; PV: PVertex3D); forward;
 
-(*procedure TSceneObject.GetProjInfo(var ProjInfo: TProjInfo; nRFactor: scalar_t);
+(*procedure TSceneObject.GetProjInfo(var ProjInfo: TProjInfo; nRFactor: Double);
 var
  SA,CA,SP,CP: Double;
 begin

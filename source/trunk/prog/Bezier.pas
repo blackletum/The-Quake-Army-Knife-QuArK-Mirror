@@ -57,7 +57,7 @@ type
 
               { use the properties below to read/write control points. }
              procedure AutoSetSmooth;  { guess the 'smooth' specific based on current control points }
-             function OrthogonalVector(u,v: Single) : vec3_t;
+             function OrthogonalVector(u, v: Double) : vec3_t;
 
              procedure AnalyseClic(Liste: PyObject); override;
              function PyGetAttr(attr: PyChar) : PyObject; override;
@@ -411,7 +411,7 @@ begin
 end;
 
  { Compute orthogonal vectors }
-function TBezier.OrthogonalVector(u,v: Single) : TMeshControlPoints3;
+function TBezier.OrthogonalVector(u, v: Double) : TMeshControlPoints3;
 var
  cp: TMeshBuf5;
  I, J: Integer;
