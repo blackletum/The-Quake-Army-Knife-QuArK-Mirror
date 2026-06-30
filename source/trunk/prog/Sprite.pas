@@ -28,6 +28,8 @@ uses DelphiCompat, Types, SysUtils, Classes, qmath, QkObjects, Qk3D, QkImages, Q
 
 type
   QSprite = class(Q3DObject)
+  protected
+    procedure GetVertices(var p: vec3_p);
   public
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
@@ -37,7 +39,6 @@ type
     procedure AddTo3DScene(Scene: TObject); override;
     procedure BuildRefList(L: TQList); virtual;
     procedure ChercheExtremites(var Min, Max: TVect); override;
-    procedure GetVertices(var p: vec3_p);
     function Triangles(var P: PComponentTris) : Integer;
   end;
 
@@ -148,20 +149,25 @@ var
   P: vec3_p;
 begin
   GetVertices(P);
-  for I:=1 to 4 do begin
-    if P^[0] < Min.X then
-      Min.X:=P^[0];
-    if P^[1] < Min.Y then
-      Min.Y:=P^[1];
-    if P^[2] < Min.Z then
-      Min.Z:=P^[2];
-    if P^[0] > Max.X then
-      Max.X:=P^[0];
-    if P^[1] > Max.Y then
-      Max.Y:=P^[1];
-    if P^[2] > Max.Z then
-      Max.Z:=P^[2];
-    Inc(P);
+  try
+    for I:=1 to 4 do
+    begin
+      if P^[0] < Min.X then
+        Min.X:=P^[0];
+      if P^[1] < Min.Y then
+        Min.Y:=P^[1];
+      if P^[2] < Min.Z then
+        Min.Z:=P^[2];
+      if P^[0] > Max.X then
+        Max.X:=P^[0];
+      if P^[1] > Max.Y then
+        Max.Y:=P^[1];
+      if P^[2] > Max.Z then
+        Max.Z:=P^[2];
+      Inc(P);
+    end;
+  finally
+    FreeMem(P);
   end;
 end;
 
