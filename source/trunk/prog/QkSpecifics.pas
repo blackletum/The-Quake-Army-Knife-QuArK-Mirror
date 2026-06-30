@@ -61,29 +61,29 @@ type
     FList: PSpecificsItemList;
     FCount: Integer;
     FCapacity: Integer;
-    function GetName(Index: Integer): string;
+    function GetName(Index: Integer): String;
     procedure Grow;
-    function GetBytes(const Name: string): string;
-    function GetBytesFromIndex(Index: Integer): string;
-    procedure SetBytes(const Name: string; const B: string);
-    procedure SetBytesFromIndex(Index: Integer; const B: string);
-    function GetFloat(const Name: string): Single;
+    function GetBytes(const Name: String): String;
+    function GetBytesFromIndex(Index: Integer): String;
+    procedure SetBytes(const Name: String; const B: String);
+    procedure SetBytesFromIndex(Index: Integer; const B: String);
+    function GetFloat(const Name: String): Single;
     function GetFloatFromIndex(Index: Integer): Single;
-    procedure SetFloat(const Name: string; const F: Single);
+    procedure SetFloat(const Name: String; const F: Single);
     procedure SetFloatFromIndex(Index: Integer; const F: Single);
-    function GetInteger(const Name: string): Integer;
+    function GetInteger(const Name: String): Integer;
     function GetIntegerFromIndex(Index: Integer): Integer;
-    procedure SetInteger(const Name: string; const I: Integer);
+    procedure SetInteger(const Name: String; const I: Integer);
     procedure SetIntegerFromIndex(Index: Integer; const I: Integer);
-    function GetString(const Name: string): string;
-    function GetStringFromIndex(Index: Integer): string;
-    procedure SetString(const Name: string; const S: string);
-    procedure SetStringFromIndex(Index: Integer; const S: string);
+    function GetString(const Name: String): String;
+    function GetStringFromIndex(Index: Integer): String;
+    procedure SetString(const Name: String; const S: String);
+    procedure SetStringFromIndex(Index: Integer; const S: String);
   protected
-    procedure Error(const Msg: string; Data: Integer); overload;
-    procedure Error(const Msg: string; const Data: string); overload;
+    procedure Error(const Msg: String; Data: Integer); overload;
+    procedure Error(const Msg: String; const Data: String); overload;
     procedure Error(Msg: PResStringRec; Data: Integer); overload;
-    procedure Error(Msg: PResStringRec; const Data: string); overload;
+    procedure Error(Msg: PResStringRec; const Data: String); overload;
     function Get(Index: Integer): TSpecificsItem;
     procedure Put(Index: Integer; const Item: TSpecificsItem);
     procedure SetCapacity(NewCapacity: Integer);
@@ -91,33 +91,33 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
-    procedure Delete(const Name: string; raiseError: Boolean = false); overload;
+    procedure Delete(const Name: String; raiseError: Boolean = false); overload;
     procedure Delete(Index: Integer); overload;
     function GetSize(Index: Integer) : Integer;
-    function IndexOfName(const Name: string): Integer;
+    function IndexOfName(const Name: String): Integer;
     procedure Insert(Index: Integer; const Item: TSpecificsItem);
-    procedure InsertBytes(Index: Integer; const Name: string; const B: string);
-    procedure InsertFloat(Index: Integer; const Name: string; const F: Single);
-    procedure InsertInteger(Index: Integer; const Name: string; const I: Integer);
+    procedure InsertBytes(Index: Integer; const Name: String; const B: String);
+    procedure InsertFloat(Index: Integer; const Name: String; const F: Single);
+    procedure InsertInteger(Index: Integer; const Name: String; const I: Integer);
     procedure InsertString(Index: Integer; const Name: string; const S: string); overload;
     procedure InsertString(Index: Integer; const Name: string; const S: PChar; Len: Integer); overload;
-    function TryGetBytes(const Name: string; var B: string): TTryGetResult;
-    function TryGetFloats(const Name: string; var F: Single): TTryGetResult;
-    function TryGetIntegers(const Name: string; var I: Integer): TTryGetResult;
-    function TryGetStrings(const Name: string; var S: string): TTryGetResult;
+    function TryGetBytes(const Name: String; var B: String): TTryGetResult;
+    function TryGetFloats(const Name: String; var F: Single): TTryGetResult;
+    function TryGetIntegers(const Name: String; var I: Integer): TTryGetResult;
+    function TryGetStrings(const Name: String; var S: String): TTryGetResult;
 
     property Count: Integer read FCount;
     property Items[Index: Integer]: TSpecificsItem read Get write Put; (*default;*)
-    property Names[Index: Integer]: string read GetName;
+    property Names[Index: Integer]: String read GetName;
 
-    property ByteArray[const Name: string]: string read GetBytes write SetBytes;
-    property ByteArrayFromIndex[Index: Integer]: string read GetBytesFromIndex write SetBytesFromIndex;
-    property Floats[const Name: string]: Single read GetFloat write SetFloat;
+    property ByteArray[const Name: String]: String read GetBytes write SetBytes;
+    property ByteArrayFromIndex[Index: Integer]: String read GetBytesFromIndex write SetBytesFromIndex;
+    property Floats[const Name: String]: Single read GetFloat write SetFloat;
     property FloatsFromIndex[Index: Integer]: Single read GetFloatFromIndex write SetFloatFromIndex;
-    property Integers[const Name: string]: Integer read GetInteger write SetInteger;
+    property Integers[const Name: String]: Integer read GetInteger write SetInteger;
     property IntegersFromIndex[Index: Integer]: Integer read GetIntegerFromIndex write SetIntegerFromIndex;
-    property Strings[const Name: string]: string read GetString write SetString;
-    property StringsFromIndex[Index: Integer]: string read GetStringFromIndex write SetStringFromIndex;
+    property Strings[const Name: String]: String read GetString write SetString;
+    property StringsFromIndex[Index: Integer]: String read GetStringFromIndex write SetStringFromIndex;
   end;
 
  {------------------------}
@@ -156,7 +156,7 @@ begin
   SetCapacity(0);
 end;
 
-procedure TSpecificsList.Delete(const Name: string; raiseError: Boolean);
+procedure TSpecificsList.Delete(const Name: String; raiseError: Boolean);
 var
   Index: Integer;
 begin
@@ -184,7 +184,7 @@ begin
       (FCount - Index) * SizeOf(TSpecificsItem));
 end;
 
-procedure TSpecificsList.Error(const Msg: string; Data: Integer);
+procedure TSpecificsList.Error(const Msg: String; Data: Integer);
 
   function ReturnAddr: Pointer;
   asm
@@ -195,7 +195,7 @@ begin
   raise EStringListError.CreateFmt(Msg, [Data]) at ReturnAddr;
 end;
 
-procedure TSpecificsList.Error(const Msg: string; const Data: string);
+procedure TSpecificsList.Error(const Msg: String; const Data: String);
 
   function ReturnAddr: Pointer;
   asm
@@ -211,7 +211,7 @@ begin
   Error(LoadResString(Msg), Data);
 end;
 
-procedure TSpecificsList.Error(Msg: PResStringRec; const Data: string);
+procedure TSpecificsList.Error(Msg: PResStringRec; const Data: String);
 begin
   Error(LoadResString(Msg), Data);
 end;
@@ -222,19 +222,19 @@ begin
   Result := FList^[Index];
 end;
 
-function TSpecificsList.GetBytes(const Name: string): string;
+function TSpecificsList.GetBytes(const Name: String): String;
 begin
   //FIXME: For now, store the bytes in a string
   Result := GetString(Name);
 end;
 
-function TSpecificsList.GetBytesFromIndex(Index: Integer): string;
+function TSpecificsList.GetBytesFromIndex(Index: Integer): String;
 begin
   //FIXME: For now, store the bytes in a string
   Result := GetStringFromIndex(Index);
 end;
 
-function TSpecificsList.GetFloat(const Name: string): Single;
+function TSpecificsList.GetFloat(const Name: String): Single;
 var
   Index: Integer;
 begin
@@ -249,7 +249,7 @@ begin
   Result := StrToFloat(FList^[Index].Value);
 end;
 
-function TSpecificsList.GetInteger(const Name: string): Integer;
+function TSpecificsList.GetInteger(const Name: String): Integer;
 var
   Index: Integer;
 begin
@@ -265,7 +265,7 @@ begin
   Result := StrToInt(FList^[Index].Value);
 end;
 
-function TSpecificsList.GetString(const Name: string): string;
+function TSpecificsList.GetString(const Name: String): String;
 var
   Index: Integer;
 begin
@@ -275,13 +275,13 @@ begin
   Result := FList^[Index].Value;
 end;
 
-function TSpecificsList.GetStringFromIndex(Index: Integer): string;
+function TSpecificsList.GetStringFromIndex(Index: Integer): String;
 begin
   if (Index < 0) or (Index >= FCount) then Error(@SListIndexError, Index);
   Result := FList^[Index].Value;
 end;
 
-function TSpecificsList.GetName(Index: Integer): string;
+function TSpecificsList.GetName(Index: Integer): String;
 begin
   Result := Get(Index).Key;
 end;
@@ -303,7 +303,7 @@ begin
   SetCapacity(FCapacity + Delta);
 end;
 
-function TSpecificsList.IndexOfName(const Name: string): Integer;
+function TSpecificsList.IndexOfName(const Name: String): Integer;
 begin
   for Result := 0 to FCount - 1 do
     if CompareText(FList^[Result].Key, Name) = 0 then Exit;
@@ -369,7 +369,7 @@ begin
   Inc(FCount);
 end;
 
-procedure TSpecificsList.InsertString(Index: Integer; const Name: String; const S: string);
+procedure TSpecificsList.InsertString(Index: Integer; const Name: String; const S: String);
 begin
   if (Index < 0) or (Index > FCount) then Error(@SListIndexError, Index); //Note: Index = FCount is allowed!
   if (IndexOfName(Name) >= 0) then Error(@SDuplicateSpecific, Name);
@@ -417,19 +417,19 @@ begin
   FCapacity := NewCapacity;
 end;
 
-procedure TSpecificsList.SetBytes(const Name: string; const B: string);
+procedure TSpecificsList.SetBytes(const Name: String; const B: String);
 begin
   //FIXME: For now, store the bytes in a string
   SetString(Name, B);
 end;
 
-procedure TSpecificsList.SetBytesFromIndex(Index: Integer; const B: string);
+procedure TSpecificsList.SetBytesFromIndex(Index: Integer; const B: String);
 begin
   //FIXME: For now, store the bytes in a string
   SetStringFromIndex(Index, B);
 end;
 
-procedure TSpecificsList.SetFloat(const Name: string; const F: Single);
+procedure TSpecificsList.SetFloat(const Name: String; const F: Single);
 var
   Index: Integer;
 begin
@@ -446,7 +446,7 @@ begin
   FList^[Index].Value := FloatToStr(F);
 end;
 
-procedure TSpecificsList.SetInteger(const Name: string; const I: Integer);
+procedure TSpecificsList.SetInteger(const Name: String; const I: Integer);
 var
   Index: Integer;
 begin
@@ -463,7 +463,7 @@ begin
   FList^[Index].Value := IntToStr(I);
 end;
 
-procedure TSpecificsList.SetString(const Name: string; const S: string);
+procedure TSpecificsList.SetString(const Name: String; const S: String);
 var
   Index: Integer;
 begin
@@ -474,13 +474,13 @@ begin
     FList^[Index].Value := S;
 end;
 
-procedure TSpecificsList.SetStringFromIndex(Index: Integer; const S: string);
+procedure TSpecificsList.SetStringFromIndex(Index: Integer; const S: String);
 begin
   if (Index < 0) or (Index >= FCount) then Error(@SListIndexError, Index);
   FList^[Index].Value := S;
 end;
 
-function TSpecificsList.TryGetBytes(const Name: string; var B: string): TTryGetResult;
+function TSpecificsList.TryGetBytes(const Name: String; var B: String): TTryGetResult;
 var
   Index: Integer;
 begin
@@ -503,7 +503,7 @@ begin
   Result := tgrSuccess;
 end;
 
-function TSpecificsList.TryGetFloats(const Name: string; var F: Single): TTryGetResult;
+function TSpecificsList.TryGetFloats(const Name: String; var F: Single): TTryGetResult;
 var
   Index: Integer;
 begin
@@ -526,7 +526,7 @@ begin
   Result := tgrSuccess;
 end;
 
-function TSpecificsList.TryGetIntegers(const Name: string; var I: Integer): TTryGetResult;
+function TSpecificsList.TryGetIntegers(const Name: String; var I: Integer): TTryGetResult;
 var
   Index: Integer;
 begin
@@ -549,7 +549,7 @@ begin
   Result := tgrSuccess;
 end;
 
-function TSpecificsList.TryGetStrings(const Name: string; var S: string): TTryGetResult;
+function TSpecificsList.TryGetStrings(const Name: String; var S: String): TTryGetResult;
 var
   Index: Integer;
 begin
