@@ -456,11 +456,7 @@ function DeflateStaticDynamic(aStatic : boolean;
                               aHelper : TAbDeflateHelper;
                               aLog    : TAbLogger) : Integer;
 var
-  {$IF COMPILERVERSION < 20}
-  i : Integer;
-  {$ELSE}
   i : Int64;
-  {$IFEND}
   SlideWin     : TAbDfInputWindow;
   BitStrm      : TAbDfOutBitStream;
   LZ77Stream   : TAbDfLZStream;
@@ -654,8 +650,14 @@ begin
       end
       {otherwise, output the one or two final literals}
       else
-        for i := 1 to KeyLen do
+      begin
+        i := 1;
+        while i <= KeyLen do
+        begin
           LZ77Stream.AddLiteral(SlideWin.GetNextChar);
+          Inc(i);
+        end;
+      end;
     end;
 
     {empty the LZ77 stream}

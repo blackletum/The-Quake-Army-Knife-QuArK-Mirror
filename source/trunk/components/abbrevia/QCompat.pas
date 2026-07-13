@@ -55,10 +55,6 @@ type
   PArithByte = PAnsiChar;
   {$IFEND}
 
-  {$IF COMPILERVERSION < 31}
-  TBufferedFileStream = TFileStream;
-  {$IFEND}
-
 implementation
 
 end.
