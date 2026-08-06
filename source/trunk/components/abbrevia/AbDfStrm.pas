@@ -350,11 +350,7 @@ function TAbDfInBitStream.ibsFillBuffer : boolean;
 var
   BytesRead   : NativeInt;
   BytesToRead : NativeInt;
-  {$IF COMPILERVERSION < 20}
-  i           : Integer;
-  {$ELSE}
   i           : NativeInt;
-  {$IFEND}
   Percent     : integer;
   Buffer      : PArithByte;
   BufferCount : NativeInt;
@@ -396,9 +392,12 @@ begin
      don't produce (dreadfully) bogus values}
     if (BytesRead = 0) and ((BufferCount mod 4) <> 0) then begin
       FFakeCount := 4 - (BufferCount mod 4);
-      for i := 0 to pred(FFakeCount) do begin
+      i := 0;
+      while i <= pred(FFakeCount) do
+      begin
         PByte(FBufEnd)^ := 0;
         inc(FBufEnd);
+        inc(i);
       end;
     end;
 
@@ -528,11 +527,7 @@ end;
 {--------}
 procedure TAbDfInBitStream.ReadBuffer(var aBuffer; aCount : NativeInt);
 var
-  {$IF COMPILERVERSION < 20}
-  i : Integer;
-  {$ELSE}
   i : NativeInt;
-  {$IFEND}
   Buffer : PByte;
   BytesToRead   : NativeInt;
   BytesInBuffer : NativeInt;
@@ -550,10 +545,13 @@ begin
    first}
   if (FBitsLeft > 0) then begin
     BytesToRead := FBitsLeft div 8;
-    for i := 0 to pred(BytesToRead) do begin
+    i := 0;
+    while i <= pred(BytesToRead) do
+    begin
       Buffer^ := Byte(FBitBuffer and $FF);
       inc(Buffer);
       FBitBuffer := FBitBuffer shr 8;
+      inc(i);
     end;
     {calculate the count of bytes still to read}
     dec(aCount, BytesToRead);

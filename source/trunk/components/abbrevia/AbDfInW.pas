@@ -715,11 +715,7 @@ procedure TAbDfInputWindow.iwSlide;
 type
   PNativeInt = ^NativeInt;
 var
-  {$IF COMPILERVERSION < 20}
-  i : Integer;
-  {$ELSE}
   i : NativeInt;
-  {$IFEND}
   ByteCount : Int64;
   Buffer    : NativeInt;
   ListItem  : PNativeInt;
@@ -737,20 +733,26 @@ begin
   {patch up the hash table: the head pointers}
   Buffer := NativeInt(FBuffer);
   ListItem := PNativeInt(@FHashHeads^[0]);
-  for i := 0 to pred(c_HashCount) do begin
+  i := 0;
+  while i <= pred(c_HashCount) do
+  begin
     dec(ListItem^, ByteCount);
     if (ListItem^ < Buffer) then
       ListItem^ := 0;
     inc(PByte(ListItem), sizeof(pointer));
+    inc(i);
   end;
 
   {..the chain pointers}
   ListItem  := PNativeInt(@FHashChains^[0]);
-  for i := 0 to pred(FWinSize) do begin
+  i := 0;
+  while i <= pred(FWinSize) do
+  begin
     dec(ListItem^, ByteCount);
     if (ListItem^ < Buffer) then
       ListItem^ := 0;
     inc(PByte(ListItem), sizeof(pointer));
+    inc(i);
   end;
 
   {now read some more data from the stream}

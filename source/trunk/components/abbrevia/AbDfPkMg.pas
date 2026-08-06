@@ -129,11 +129,7 @@ procedure GenerateCodeLengths(aMaxCodeLen  : integer;
                               aStartInx    : integer;
                               aLog         : TAbLogger);
 var
-  {$IF COMPILERVERSION < 20}
-  i   : Integer;
-  {$ELSE}
   i   : NativeInt;
-  {$IFEND}
   Bit : integer;
   WeightCount    : NativeInt;
   OrigList       : PPkgNodeList;
@@ -174,7 +170,9 @@ begin
     {create the original list of nodes}
     GetMem(OrigList, WeightCount * sizeof(PPkgNode));
     OrigListCount := 0;
-    for i := 0 to pred(WeightCount) do
+    i := 0;
+    while i <= pred(WeightCount) do
+    begin
       if (aWeights[i] <> 0) then begin
         Node := NodeMgr.AllocNode;
         Node^.pnLeft := nil;           { this will indicate a leaf}
@@ -184,6 +182,8 @@ begin
         OrigList^[OrigListCount] := Node;
         inc(OrigListCount);
       end;
+      inc(i);
+    end;
 
     {we need at least 2 items, so make anything less a special case}
     if (OrigListCount <= 1) then begin
@@ -197,11 +197,15 @@ begin
       end;
 
       {otherwise there is only one item: set its code length directly}
-      for i := 0 to pred(WeightCount) do
+      i:= 0;
+      while i <= pred(WeightCount) do
+      begin
         if (aWeights[i] <> 0) then begin
           aCodeLengths[aStartInx + i] := 1;
           Exit;
         end;
+        inc(i);
+      end;
     end;
 
     {there are at least 2 items in the list; so sort the list}
@@ -222,7 +226,9 @@ begin
       {generate the package list from the merge list by grouping pairs
        from the merge list and adding them to the package list}
       PkgListCount := 0;
-      for i := 0 to pred(MergeListCount div 2) do begin
+      i := 0;
+      while i <= pred(MergeListCount div 2) do
+      begin
         Node := NodeMgr.AllocNode;
         Node^.pnLeft := MergeList^[i * 2];
         Node^.pnRight := MergeList^[i * 2 + 1];
@@ -233,6 +239,7 @@ begin
         {$ENDIF}
         PkgList^[PkgListCount] := Node;
         inc(PkgListCount);
+        inc(i);
       end;
 
       {merge the original list and the package list}
@@ -267,14 +274,21 @@ begin
     end;
 
     {calculate the code lengths}
-    for i := 0 to (OrigListCount * 2) - 3 do begin
+    i := 0;
+    while i <= (OrigListCount * 2) - 3 do
+    begin
       Node := MergeList^[i];
       if (Node^.pnLeft <> nil) then
         Accumulate(Node);
+      inc(i);
     end;
-    for i := 0 to pred(OrigListCount) do
+    i := 0;
+    while i <= pred(OrigListCount) do
+    begin
       aCodeLengths[aStartInx + NativeInt(OrigList^[i].pnRight)] :=
           OrigList^[i].pnCount;
+      inc(i);
+    end;
   finally
     FreeMem(OrigList);
     FreeMem(MergeList);
