@@ -1,0 +1,10 @@
+<author>DanielPharos</author>
+<headline>30 years of QuArK!</headline>
+
+<p>When you think about it, there's barely any software that lasts a decade, let alone three of 'm! QuArK turns 30 years old, and amazingly, it still runs just fine on modern systems. Sure, it could use a lick of fresh paint, but if you used QuArK in the past decades, you'll feel right at home if you download and install it today. So why don't you give it a try, and see what awesome maps, models, and mods are still to be made?</p>
+
+<p>Here's to speed-running another decade! Cheers!</p>
+
+
+<p>Happy party-ing,<br>
+DanielPharos</p>
