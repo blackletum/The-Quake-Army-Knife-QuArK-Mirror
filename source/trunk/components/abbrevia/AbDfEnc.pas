@@ -192,7 +192,7 @@ begin
       aBitStrm.AlignToByte;
 
       {write the stored block header}
-      BlockHeader.bhSize := AbToWord(BlockSize);
+      BlockHeader.bhSize := AbToUInt16(BlockSize);
       BlockHeader.bhNotSize := not BlockHeader.bhSize;
       aBitStrm.WriteBuffer(BlockHeader, sizeof(BlockHeader));
 
@@ -694,7 +694,7 @@ const
   StoredBlockSize = $FFFF;
 var
   Buffer    : PByte;
-  BytesRead : UInt32;
+  BytesRead : Int32;
   ByteCount : Int64;
   BytesToGo : Int64;
   CurPos    : Int64;
@@ -759,7 +759,7 @@ begin
         BlockHeader.bhInfo := 1  {ie, final block, stored}
       else
         BlockHeader.bhInfo := 0; {ie, not final block, stored}
-      BlockHeader.bhSize := AbToWord(BytesRead);
+      BlockHeader.bhSize := AbToUInt16(BytesRead);
       BlockHeader.bhNotSize := not BlockHeader.bhSize;
       aDest.WriteBuffer(BlockHeader, sizeof(BlockHeader));
 

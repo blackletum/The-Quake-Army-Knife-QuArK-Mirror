@@ -264,19 +264,17 @@ const
     {-Sets platform-native file attributes (DOS attr or Unix mode)}
   function AbFileGetSize(const aFileName : string) : Int64;
 
-  function AbToByte(const AValue: Byte): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToByte(const AValue: Int16): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToByte(const AValue: Int32): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToByte(const AValue: Int64): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToByte(const AValue: UInt16): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt8(const AValue: UInt8): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt8(const AValue: Int16): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt8(const AValue: Int32): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt8(const AValue: Int64): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt8(const AValue: UInt16): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 
-  function AbToWord(const AValue: Int32): Word; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToWord(const AValue: Int64): Word; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToWord(const AValue: Word): Word; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToInt16(const AValue: Int32): Int16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToInt16(const AValue: Int64): Int16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 
-  function AbToSmallint(const AValue: Int32): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToSmallint(const AValue: Int64): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-  function AbToSmallint(const AValue: Smallint): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToUInt16(const AValue: Int32): UInt16; overload;{$IF COMPILERVERSION > 16}  inline;{$IFEND}
+  function AbToUInt16(const AValue: Int64): UInt16; overload;{$IF COMPILERVERSION > 16}  inline;{$IFEND}
 
   function AbToInt32(const AValue: Int32): Int32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
   function AbToInt32(const AValue: Int64): Int32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
@@ -285,6 +283,12 @@ const
   function AbToUInt32(const AValue: Int32): UInt32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
   function AbToUInt32(const AValue: UInt32): UInt32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 
+  function AbToInt64(const AValue: UInt64): Int64; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+
+  function AbToNativeInt(const AValue: UInt32): NativeInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+  function AbToNativeInt(const AValue: UInt64): NativeInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+
+  function AbToNativeUInt(const AValue: Int64): NativeUInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 type
   TAbAttrExRec = record
     Time: TDateTime;
@@ -890,7 +894,7 @@ begin
   else if V1 >= V2 then
     Result := 100
   else
-    Result := AbToByte((V1 * 100) div V2);
+    Result := AbToUInt8((V1 * 100) div V2);
 end;
 { -------------------------------------------------------------------------- }
 (*procedure AbStripDots( var FName : string );
@@ -939,17 +943,17 @@ procedure AbUpdateCRC( var CRC : Integer; const Buffer; Len : Integer );
 var
   BufPtr : PByte;
   i : Integer;
-  CRCTemp : DWORD;
+  CRCTemp : UInt32;
 begin
   BufPtr := @Buffer;
-  CRCTemp := CRC;
+  CRCTemp := AbToUInt32(CRC);
   for i := 0 to pred( Len ) do
   begin
     CRCTemp := AbCrc32Table[ Byte(CrcTemp) xor (BufPtr^) ] xor
               ((CrcTemp shr 8) and $00FFFFFF);
     Inc(BufPtr);
   end;
-  CRC := CRCTemp;
+  CRC := AbToInt32(CRCTemp);
 end;
 { -------------------------------------------------------------------------- }
 function AbUpdateCRC32(CurByte : Byte; CurCrc : Integer) : Integer;
@@ -957,8 +961,8 @@ function AbUpdateCRC32(CurByte : Byte; CurCrc : Integer) : Integer;
 { Normally a good candidate for basm, but Delphi32's code
     generation couldn't be beat on this one!}
 begin
-  Result := DWORD(AbCrc32Table[ Byte(CurCrc xor Integer( CurByte ) ) ] xor
-            ((CurCrc shr 8) and DWORD($00FFFFFF)));
+  Result := AbToInt32(DWORD(AbCrc32Table[ Byte(CurCrc xor Integer( CurByte ) ) ] xor
+            ((CurCrc shr 8) and DWORD($00FFFFFF))));
 end;
 { -------------------------------------------------------------------------- }
 function AbCRC32Of(const aValue: TBytes) : Integer;
@@ -1022,10 +1026,10 @@ var
 begin
   UnixTime := UnixTime - AbOffsetFromUTC;
   TodaysSecs := UnixTime mod SecondsInDay;
-  Hrs := AbToWord(TodaysSecs div SecondsInHour);
+  Hrs := AbToUInt16(TodaysSecs div SecondsInHour);
   TodaysSecs := TodaysSecs - (Hrs * SecondsInHour);
-  Mins := AbToWord(TodaysSecs div SecondsInMinute);
-  Secs := AbToWord(TodaysSecs - (Mins * SecondsInMinute));
+  Mins := AbToUInt16(TodaysSecs div SecondsInMinute);
+  Secs := AbToUInt16(TodaysSecs - (Mins * SecondsInMinute));
 
   if TryEncodeTime(Hrs, Mins, Secs, 0, Time) then
     Result := Unix0Date + (UnixTime div SecondsInDay) + Time
@@ -1255,9 +1259,9 @@ begin
        FileTimeToDosDateTime(LocalFileTime, FileDate.Hi, FileDate.Lo) then
       aAttr.Time := FileDateToDateTime(Integer(FileDate));
     LARGE_INTEGER(aAttr.Size).LowPart := FindData.nFileSizeLow;
-    LARGE_INTEGER(aAttr.Size).HighPart := FindData.nFileSizeHigh;
-    aAttr.Attr := FindData.dwFileAttributes;
-    aAttr.Mode := AbDOS2UnixFileAttributes(FindData.dwFileAttributes);
+    LARGE_INTEGER(aAttr.Size).HighPart := AbToInt32(FindData.nFileSizeHigh);
+    aAttr.Attr := AbToInt32(FindData.dwFileAttributes);
+    aAttr.Mode := AbToUInt32(AbDOS2UnixFileAttributes(AbToInt32(FindData.dwFileAttributes)));
   end;
 {$ENDIF}
 {$IFDEF POSIX}
@@ -1281,7 +1285,7 @@ function AbGetVolumeLabel(Drive : Char) : string;
 var
   Root : string;
   Flags, MaxLength : DWORD;
-  NameSize : Integer;
+  NameSize : UInt32;
   VolName : string;
 {$ENDIF}
 begin
@@ -1292,7 +1296,7 @@ begin
 
   Result := '';
 
-  if GetVolumeInformation(PChar(Root), PChar(VolName), Length(VolName),
+  if GetVolumeInformation(PChar(Root), PChar(VolName), AbToUInt32(Length(VolName)),
     nil, MaxLength, Flags, nil, NameSize)
   then
     Result := VolName;
@@ -1316,59 +1320,49 @@ begin
   Result := VolLabel = TestLabel;
 end;
 
-function AbToByte(const AValue: Byte): Byte; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt8(const AValue: UInt8): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
   Result := AValue;
 end;
 
-function AbToByte(const AValue: Int16): Byte;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt8(const AValue: Int16): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Byte(AValue);
+  Result := UInt8(AValue);
 end;
 
-function AbToByte(const AValue: Int32): Byte;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt8(const AValue: Int32): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Byte(AValue);
+  Result := UInt8(AValue);
 end;
 
-function AbToByte(const AValue: Int64): Byte;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt8(const AValue: Int64): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Byte(AValue);
+  Result := UInt8(AValue);
 end;
 
-function AbToByte(const AValue: UInt16): Byte;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt8(const AValue: UInt16): UInt8; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Byte(AValue);
+  Result := UInt8(AValue);
 end;
 
-function AbToWord(const AValue: Int32): Word;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToInt16(const AValue: Int32): Int16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Word(AValue);
+  Result := Int16(AValue);
 end;
 
-function AbToWord(const AValue: Int64): Word;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToInt16(const AValue: Int64): Int16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Word(AValue);
+  Result := Int16(AValue);
 end;
 
-function AbToWord(const AValue: Word): Word; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt16(const AValue: Int32): UInt16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := AValue;
+  Result := UInt16(AValue);
 end;
 
-function AbToSmallint(const AValue: Int32): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+function AbToUInt16(const AValue: Int64): UInt16; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
-  Result := Smallint(AValue);
-end;
-
-function AbToSmallint(const AValue: Int64): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-begin
-  Result := Smallint(AValue);
-end;
-
-function AbToSmallint(const AValue: Smallint): Smallint; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
-begin
-  Result := AValue;
+  Result := UInt16(AValue);
 end;
 
 function AbToInt32(const AValue: Int32): Int32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
@@ -1394,6 +1388,26 @@ end;
 function AbToUInt32(const AValue: UInt32): UInt32; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
 begin
   Result := AValue;
+end;
+
+function AbToInt64(const AValue: UInt64): Int64; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+begin
+  Result := Int64(AValue);
+end;
+
+function AbToNativeInt(const AValue: UInt32): NativeInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+begin
+  Result := NativeInt(AValue);
+end;
+
+function AbToNativeInt(const AValue: UInt64): NativeInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+begin
+  Result := NativeInt(AValue);
+end;
+
+function AbToNativeUInt(const AValue: Int64): NativeUInt; overload;{$IF COMPILERVERSION > 16} inline;{$IFEND}
+begin
+  Result := NativeUInt(AValue);
 end;
 
 end.

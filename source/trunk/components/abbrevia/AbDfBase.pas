@@ -666,7 +666,7 @@ begin
   Buffer := @aBuffer;
 
   {get the current CRC as a local variable, it's faster}
-  CRC := aCRC;
+  CRC := AbToUInt32(aCRC);
 
   {checksum the bytes in the buffer}
   i := 0;
@@ -678,7 +678,7 @@ begin
   end;
 
   {return the new CRC}
-  aCRC := CRC;
+  aCRC := AbToInt32(CRC);
 {$R+}{$Q+}
 end;
 {====================================================================}
@@ -799,9 +799,9 @@ end;
 function TAbNodeManager.nmAllocNewPage : pointer;
 var
   NewPage  : PByte;
-  i        : integer;
+  i        : UInt32;
   FreeList : pointer;
-  NodeSize : integer;
+  NodeSize : UInt32;
 begin
   {allocate a new page and add it to the front of the page list}
   GetMem(NewPage, FPageSize);

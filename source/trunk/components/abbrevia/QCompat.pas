@@ -33,10 +33,11 @@ uses
 
 type
   {$IF COMPILERVERSION < 20}
+  Int8   = ShortInt;
   Int16  = SmallInt;
-  UInt16 = Word;
-
   Int32  = LongInt;
+  UInt8  = Byte;
+  UInt16 = Word;
   UInt32 = LongWord;
   {$IFEND}
 
